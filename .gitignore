@@ -1,0 +1,5 @@
+*.cmd
+src/.tmp_versions/*
+*.ko
+*.mod.*
+*.o
