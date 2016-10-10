@@ -1,4 +1,34 @@
 include ~/toolsets/linux/linux-module.hsl
 
-project dev-enigma : toolset "linux-module" : "dev.c", "enigma";
+var includes type list;
+var cflags type list;
+var libraries type list;
+var ldflags type list;
+
+project dev-enigma : toolset "linux-module" : "dev.c", $includes, $cflags, $libraries, $ldflags, "enigma";
+
+dev-enigma.prologue() {
+    var cwd type string;
+
+    $cwd = hefesto.sys.pwd();
+    if (hefesto.sys.cd("eel/src")) {
+        hefesto.sys.forge("libeel", "Forgefile.hsl", "--bin-output-dir=lib --obj-output-dir=o");
+        hefesto.sys.cd($cwd);
+    }
+
+    if (hefesto.sys.last_forge_result() != 0) {
+        hefesto.project.abort(hefesto.sys.last_forge_result());
+    }
+
+    #
+    # INFO(Santiago): Well, all KBuild's "incantations" run inside the kernel source tree. So a good
+    #                 thing to do is to specify full paths instead of relative ones. It can keep
+    #                 your sanity during build hells.
+
+    $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "eel/src"));
+    $libraries.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "eel/src/lib"));
+
+    $ldflags.add_item("-leel");
+}
+
 
