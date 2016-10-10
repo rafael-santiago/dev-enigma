@@ -26,9 +26,8 @@ dev-enigma.prologue() {
     #                 your sanity during build hells.
 
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "eel/src"));
-    $libraries.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "eel/src/lib"));
 
-    $ldflags.add_item("-leel");
+    $ldflags.add_item("eel/src/lib/libeel.a");
 }
 
 
