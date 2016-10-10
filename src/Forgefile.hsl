@@ -1,0 +1,4 @@
+include ~/toolsets/linux/linux-module.hsl
+
+project dev-enigma : toolset "linux-module" : "dev.c", "enigma";
+
