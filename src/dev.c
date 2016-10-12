@@ -117,28 +117,65 @@ static ssize_t dev_write(struct file *fp, const char *buf, size_t len, loff_t *l
 
 static long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
     int result = 0;
+    libeel_enigma_ctx user_enigma;
 
     switch (cmd) {
+
         case ENIGMA_RESET:
             if (g_dev_enigma.has_init) {
+
                 g_dev_enigma.has_init = libeel_init_machine(g_dev_enigma.enigma);
+
                 if (!g_dev_enigma.has_init) {
                     result = -EINVAL;
                 }
+
             } else {
                 result = -EINVAL;
             }
             break;
 
         case ENIGMA_SET:
-            if (!access_ok(VERIFY_READ, (void __user *)usr_param, sizeof(libeel_enigma_ctx))) {
+            if (!access_ok(VERIFY_READ, (void __user *)usr_param, _IOC_SIZE(cmd))) {
                 return -EFAULT;
+            }
+
+            user_enigma = *((libeel_enigma_ctx *)usr_param);
+
+            g_dev_enigma.enigma->left_rotor = user_enigma.left_rotor;
+            g_dev_enigma.enigma->middle_rotor = user_enigma.middle_rotor;
+            g_dev_enigma.enigma->right_rotor = user_enigma.right_rotor;
+
+            libeel_rotor_at(g_dev_enigma.enigma, l) = libeel_rotor_at(&user_enigma, l);
+            libeel_rotor_at(g_dev_enigma.enigma, m) = libeel_rotor_at(&user_enigma, m);
+            libeel_rotor_at(g_dev_enigma.enigma, r) = libeel_rotor_at(&user_enigma, r);
+
+            g_dev_enigma.enigma->reflector = user_enigma.reflector;
+
+            libeel_plugboard(g_dev_enigma.enigma, 1).l = libeel_plugboard(&user_enigma, 1).l;
+            libeel_plugboard(g_dev_enigma.enigma, 1).r = libeel_plugboard(&user_enigma, 1).r;
+            libeel_plugboard(g_dev_enigma.enigma, 2).l = libeel_plugboard(&user_enigma, 2).l;
+            libeel_plugboard(g_dev_enigma.enigma, 2).r = libeel_plugboard(&user_enigma, 2).r;
+            libeel_plugboard(g_dev_enigma.enigma, 3).l = libeel_plugboard(&user_enigma, 3).l;
+            libeel_plugboard(g_dev_enigma.enigma, 3).r = libeel_plugboard(&user_enigma, 3).r;
+            libeel_plugboard(g_dev_enigma.enigma, 4).l = libeel_plugboard(&user_enigma, 4).l;
+            libeel_plugboard(g_dev_enigma.enigma, 4).r = libeel_plugboard(&user_enigma, 4).r;
+            libeel_plugboard(g_dev_enigma.enigma, 5).l = libeel_plugboard(&user_enigma, 5).l;
+            libeel_plugboard(g_dev_enigma.enigma, 5).r = libeel_plugboard(&user_enigma, 5).r;
+            libeel_plugboard(g_dev_enigma.enigma, 6).l = libeel_plugboard(&user_enigma, 6).l;
+            libeel_plugboard(g_dev_enigma.enigma, 6).r = libeel_plugboard(&user_enigma, 6).r;
+
+            memset(&user_enigma, 0, sizeof(user_enigma));
+
+            if (!(g_dev_enigma.has_init = libeel_init_machine(g_dev_enigma.enigma))) {
+                result = -EINVAL;
             }
             break;
 
         default:
             result = -EINVAL;
             break;
+
     }
 
     return result;
