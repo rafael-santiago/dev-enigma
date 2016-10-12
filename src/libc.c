@@ -6,9 +6,6 @@
  *
  */
 #include "libc.h"
-#if defined(__linux__)
-#include <linux/types.h>
-#endif
 
 //  INFO(Santiago): This module is used to implement the libc stuff used by Libeel.
 //
@@ -16,6 +13,9 @@
 //                  still going on under the user-space. Doing it we can use a library
 //                  which was written for user-space into kernel-space without changing
 //                  anything on Eel, neither exploding things into kernel-space.
+//
+//                  The malloc() and free() functions are merely stubs, in fact they
+//                  never be called.
 //
 //                  WARNING: Do not try to implement stupid stubs for malloc(),
 //                           free() and use the Libeel's user-space allocation
@@ -44,4 +44,11 @@ char tolower(const char c) {
 const unsigned short **__ctype_b_loc(void) {
     static const unsigned short *boo = NULL;
     return &boo;
+}
+
+void *malloc(size_t ssize) {
+    return NULL;
+}
+
+void free(void *p) {
 }

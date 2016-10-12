@@ -6,6 +6,7 @@
  *
  */
 #include "keel.h"
+#include "enigmactl.h"
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/device.h>
@@ -21,16 +22,18 @@ MODULE_AUTHOR("Rafael Santiago");
 MODULE_DESCRIPTION("An Enigma machine simulator");
 MODULE_VERSION("0.0.1");
 
-static int dev_open(struct inode *i, struct file *fp);
-static int dev_release(struct inode *i, struct file *fp);
+static int dev_open(struct inode *ip, struct file *fp);
+static int dev_release(struct inode *ip, struct file *fp);
 static ssize_t dev_read(struct file *fp, char *buf, size_t len, loff_t *loff);
 static ssize_t dev_write(struct file *fp, const char *buf, size_t len, loff_t *loff);
+static long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param);
 
 static struct file_operations fops = {
     .open = dev_open,
     .release = dev_release,
     .read = dev_read,
-    .write = dev_write
+    .write = dev_write,
+    .unlocked_ioctl = dev_ioctl
 };
 
 struct dev_enigma_ctx {
@@ -38,6 +41,7 @@ struct dev_enigma_ctx {
     int major_nr;
     struct class *device_class;
     struct device *device;
+    int has_init;
 };
 
 static struct dev_enigma_ctx g_dev_enigma = { 0 };
@@ -95,11 +99,11 @@ static void __exit enigma_exit(void) {
     printk(KERN_INFO "dev/enigma: Done.\n");
 }
 
-static int dev_open(struct inode *i, struct file *fp) {
+static int dev_open(struct inode *ip, struct file *fp) {
     return 0;
 }
 
-static int dev_release(struct inode *i, struct file *fp) {
+static int dev_release(struct inode *ip, struct file *fp) {
     return 0;
 }
 
@@ -109,6 +113,35 @@ static ssize_t dev_read(struct file *fp, char *buf, size_t len, loff_t *loff) {
 
 static ssize_t dev_write(struct file *fp, const char *buf, size_t len, loff_t *loff) {
     return 0;
+}
+
+static long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
+    int result = 0;
+
+    switch (cmd) {
+        case ENIGMA_RESET:
+            if (g_dev_enigma.has_init) {
+                g_dev_enigma.has_init = libeel_init_machine(g_dev_enigma.enigma);
+                if (!g_dev_enigma.has_init) {
+                    result = -EINVAL;
+                }
+            } else {
+                result = -EINVAL;
+            }
+            break;
+
+        case ENIGMA_SET:
+            if (!access_ok(VERIFY_READ, (void __user *)usr_param, sizeof(libeel_enigma_ctx))) {
+                return -EFAULT;
+            }
+            break;
+
+        default:
+            result = -EINVAL;
+            break;
+    }
+
+    return result;
 }
 
 
