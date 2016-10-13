@@ -15,3 +15,6 @@ var ldflags type list;
 
 project dev-enigma : toolset "linux-module" : "dev.c", $includes, $cflags, $libraries, $ldflags, "enigma";
 
+dev-enigma.prologue() {
+    $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "eel"));
+}

@@ -5,7 +5,7 @@
  * the terms of the GNU General Public License version 2.
  *
  */
-#include "eel.h"
+#include <eel.h>
 #include "enigmactl.h"
 #include <linux/init.h>
 #include <linux/module.h>
