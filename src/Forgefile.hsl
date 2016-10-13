@@ -13,11 +13,16 @@ var cflags type list;
 var libraries type list;
 var ldflags type list;
 
-project dev-enigma : toolset "linux-module" : "dev.c", $includes, $cflags, $libraries, $ldflags, "enigma";
+project dev-enigma : toolset "linux-module" : "mod.c", $includes, $cflags, $libraries, $ldflags, "enigma";
 
 dev-enigma.prologue() {
+
+    # INFO(Santiago): The KBuild runs relative to the kernel source tree, for this reason is important to
+    #                 define the include directories as full-paths.
+
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "eel"));
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "ebuf"));
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "dev_ctx"));
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "fops_impl"));
+    $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "mod_traps"));
 }

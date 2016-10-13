@@ -5,30 +5,21 @@
  * the terms of the GNU General Public License version 2.
  *
  */
+#include "mod_init.h"
+#include "mod_info.h"
 #include <dev_ctx.h>
 #include <eel.h>
-#include <ebuf.h>
 #include <dev_open.h>
 #include <dev_release.h>
 #include <dev_read.h>
 #include <dev_write.h>
 #include <dev_ioctl.h>
-#include "enigmactl.h"
-#include <linux/init.h>
 #include <linux/module.h>
 #include <linux/device.h>
 #include <linux/kernel.h>
 #include <linux/fs.h>
 #include <asm/uaccess.h>
 #include <linux/mutex.h>
-
-#define DEVNAME "enigma"
-#define CLASS_NAME "ems"
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Rafael Santiago");
-MODULE_DESCRIPTION("An Enigma machine simulator as char device");
-MODULE_VERSION("0.0.1");
 
 static struct file_operations fops = {
     .open = dev_open,
@@ -38,7 +29,7 @@ static struct file_operations fops = {
     .unlocked_ioctl = dev_ioctl
 };
 
-static int __init enigma_init(void) {
+int __init enigma_init(void) {
     printk(KERN_INFO "dev/enigma: Initializing the /dev/enigma...\n");
     dev_ctx()->enigma = libeel_new_enigma_ctx();
 
@@ -83,21 +74,3 @@ static int __init enigma_init(void) {
 
     return 0;
 }
-
-static void __exit enigma_exit(void) {
-    printk(KERN_INFO "dev/enigma: The /dev/enigma is being unloaded...\n");
-    if (dev_ctx()->enigma != NULL) {
-        libeel_del_enigma_ctx(dev_ctx()->enigma);
-    }
-    if (dev_ctx()->ebuf != NULL) {
-        del_ebuf_ctx(dev_ctx()->ebuf);
-    }
-    device_destroy(dev_ctx()->device_class, MKDEV(dev_ctx()->major_nr, 0));
-    class_unregister(dev_ctx()->device_class);
-    class_destroy(dev_ctx()->device_class);
-    unregister_chrdev(dev_ctx()->major_nr, DEVNAME);
-    printk(KERN_INFO "dev/enigma: Done.\n");
-}
-
-module_init(enigma_init);
-module_exit(enigma_exit);
