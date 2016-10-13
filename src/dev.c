@@ -6,6 +6,7 @@
  *
  */
 #include <eel.h>
+#include <ebuf.h>
 #include "enigmactl.h"
 #include <linux/init.h>
 #include <linux/module.h>
@@ -20,7 +21,7 @@
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Rafael Santiago");
-MODULE_DESCRIPTION("An Enigma machine simulator");
+MODULE_DESCRIPTION("An Enigma machine simulator as char device");
 MODULE_VERSION("0.0.1");
 
 static int dev_open(struct inode *ip, struct file *fp);
@@ -39,6 +40,7 @@ static struct file_operations fops = {
 
 struct dev_enigma_ctx {
     libeel_enigma_ctx *enigma;
+    ebuf_ctx *ebuf, *tail;
     int major_nr;
     struct class *device_class;
     struct device *device;
@@ -88,6 +90,8 @@ static int __init enigma_init(void) {
 
     mutex_init(&g_dev_enigma.lock);
 
+    g_dev_enigma.ebuf = NULL;
+
     printk(KERN_INFO "dev/enigma: Done.\n");
 
     return 0;
@@ -97,6 +101,9 @@ static void __exit enigma_exit(void) {
     printk(KERN_INFO "dev/enigma: The /dev/enigma is being unloaded...\n");
     if (g_dev_enigma.enigma != NULL) {
         libeel_del_enigma_ctx(g_dev_enigma.enigma);
+    }
+    if (g_dev_enigma.ebuf != NULL) {
+        del_ebuf_ctx(g_dev_enigma.ebuf);
     }
     device_destroy(g_dev_enigma.device_class, MKDEV(g_dev_enigma.major_nr, 0));
     class_unregister(g_dev_enigma.device_class);
@@ -156,6 +163,9 @@ static long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param
 
                 if (!g_dev_enigma.has_init) {
                     result = -EINVAL;
+                } else if (g_dev_enigma.ebuf != NULL) {
+                    del_ebuf_ctx(g_dev_enigma.ebuf);
+                    g_dev_enigma.ebuf = NULL;
                 }
 
             } else {
@@ -197,6 +207,9 @@ static long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param
 
             if (!(g_dev_enigma.has_init = libeel_init_machine(g_dev_enigma.enigma))) {
                 result = -EINVAL;
+            } else if (g_dev_enigma.ebuf != NULL) {
+                del_ebuf_ctx(g_dev_enigma.ebuf);
+                g_dev_enigma.ebuf = NULL;
             }
             break;
 
@@ -208,7 +221,6 @@ static long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param
 
     return result;
 }
-
 
 module_init(enigma_init);
 module_exit(enigma_exit);
