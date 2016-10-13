@@ -18,4 +18,6 @@ project dev-enigma : toolset "linux-module" : "dev.c", $includes, $cflags, $libr
 dev-enigma.prologue() {
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "eel"));
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "ebuf"));
+    $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "dev_ctx"));
+    $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "fops_impl"));
 }

@@ -1,3 +1,10 @@
+/*
+ *                              Copyright (C) 2016 by Rafael Santiago
+ *
+ * This is free software. You can redistribute it and/or modify under
+ * the terms of the GNU General Public License version 2.
+ *
+ */
 #ifndef DEV_ENIGMA_ENIGMACTL_H
 #define DEV_ENIGMA_ENIGMACTL_H 1
 

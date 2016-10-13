@@ -5,8 +5,14 @@
  * the terms of the GNU General Public License version 2.
  *
  */
+#include <dev_ctx.h>
 #include <eel.h>
 #include <ebuf.h>
+#include <dev_open.h>
+#include <dev_release.h>
+#include <dev_read.h>
+#include <dev_write.h>
+#include <dev_ioctl.h>
 #include "enigmactl.h"
 #include <linux/init.h>
 #include <linux/module.h>
@@ -24,12 +30,6 @@ MODULE_AUTHOR("Rafael Santiago");
 MODULE_DESCRIPTION("An Enigma machine simulator as char device");
 MODULE_VERSION("0.0.1");
 
-static int dev_open(struct inode *ip, struct file *fp);
-static int dev_release(struct inode *ip, struct file *fp);
-static ssize_t dev_read(struct file *fp, char *buf, size_t len, loff_t *loff);
-static ssize_t dev_write(struct file *fp, const char *buf, size_t len, loff_t *loff);
-static long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param);
-
 static struct file_operations fops = {
     .open = dev_open,
     .release = dev_release,
@@ -38,59 +38,46 @@ static struct file_operations fops = {
     .unlocked_ioctl = dev_ioctl
 };
 
-struct dev_enigma_ctx {
-    libeel_enigma_ctx *enigma;
-    ebuf_ctx *ebuf, *tail;
-    int major_nr;
-    struct class *device_class;
-    struct device *device;
-    int has_init;
-    int has_open;
-    struct mutex lock;
-};
-
-static struct dev_enigma_ctx g_dev_enigma = { 0 };
-
 static int __init enigma_init(void) {
     printk(KERN_INFO "dev/enigma: Initializing the /dev/enigma...\n");
-    g_dev_enigma.enigma = libeel_new_enigma_ctx();
+    dev_ctx()->enigma = libeel_new_enigma_ctx();
 
-    if (g_dev_enigma.enigma == NULL) {
+    if (dev_ctx()->enigma == NULL) {
         printk(KERN_INFO "dev/enigma: Error during libeel_new_enigma_ctx().\n");
         return 1;
     }
 
-    g_dev_enigma.major_nr = register_chrdev(0, DEVNAME, &fops);
+    dev_ctx()->major_nr = register_chrdev(0, DEVNAME, &fops);
 
-    if (g_dev_enigma.major_nr < 0) {
+    if (dev_ctx()->major_nr < 0) {
         printk(KERN_INFO "dev/enigma: device registration has failed.\n");
-        return g_dev_enigma.major_nr;
+        return dev_ctx()->major_nr;
     }
 
-    printk(KERN_INFO "dev/enigma: device registered under the number %d.\n", g_dev_enigma.major_nr);
+    printk(KERN_INFO "dev/enigma: device registered under the number %d.\n", dev_ctx()->major_nr);
 
-    g_dev_enigma.device_class = class_create(THIS_MODULE, CLASS_NAME);
+    dev_ctx()->device_class = class_create(THIS_MODULE, CLASS_NAME);
 
-    if (IS_ERR(g_dev_enigma.device_class)) {
-        unregister_chrdev(g_dev_enigma.major_nr, DEVNAME);
+    if (IS_ERR(dev_ctx()->device_class)) {
+        unregister_chrdev(dev_ctx()->major_nr, DEVNAME);
         printk(KERN_INFO "dev/enigma: class creating fail.\n");
-        return PTR_ERR(g_dev_enigma.device_class);
+        return PTR_ERR(dev_ctx()->device_class);
     }
 
     printk(KERN_INFO "dev/enigma: device class successfully created.\n");
 
-    g_dev_enigma.device = device_create(g_dev_enigma.device_class, NULL, MKDEV(g_dev_enigma.major_nr, 0), NULL, DEVNAME);
+    dev_ctx()->device = device_create(dev_ctx()->device_class, NULL, MKDEV(dev_ctx()->major_nr, 0), NULL, DEVNAME);
 
-    if (IS_ERR(g_dev_enigma.device)) {
-        class_destroy(g_dev_enigma.device_class);
-        unregister_chrdev(g_dev_enigma.major_nr, DEVNAME);
+    if (IS_ERR(dev_ctx()->device)) {
+        class_destroy(dev_ctx()->device_class);
+        unregister_chrdev(dev_ctx()->major_nr, DEVNAME);
         printk(KERN_INFO "dev/enigma: device creation fail.\n");
-        return PTR_ERR(g_dev_enigma.device);
+        return PTR_ERR(dev_ctx()->device);
     }
 
-    mutex_init(&g_dev_enigma.lock);
+    mutex_init(&dev_ctx()->lock);
 
-    g_dev_enigma.ebuf = NULL;
+    dev_ctx()->ebuf = NULL;
 
     printk(KERN_INFO "dev/enigma: Done.\n");
 
@@ -99,127 +86,17 @@ static int __init enigma_init(void) {
 
 static void __exit enigma_exit(void) {
     printk(KERN_INFO "dev/enigma: The /dev/enigma is being unloaded...\n");
-    if (g_dev_enigma.enigma != NULL) {
-        libeel_del_enigma_ctx(g_dev_enigma.enigma);
+    if (dev_ctx()->enigma != NULL) {
+        libeel_del_enigma_ctx(dev_ctx()->enigma);
     }
-    if (g_dev_enigma.ebuf != NULL) {
-        del_ebuf_ctx(g_dev_enigma.ebuf);
+    if (dev_ctx()->ebuf != NULL) {
+        del_ebuf_ctx(dev_ctx()->ebuf);
     }
-    device_destroy(g_dev_enigma.device_class, MKDEV(g_dev_enigma.major_nr, 0));
-    class_unregister(g_dev_enigma.device_class);
-    class_destroy(g_dev_enigma.device_class);
-    unregister_chrdev(g_dev_enigma.major_nr, DEVNAME);
+    device_destroy(dev_ctx()->device_class, MKDEV(dev_ctx()->major_nr, 0));
+    class_unregister(dev_ctx()->device_class);
+    class_destroy(dev_ctx()->device_class);
+    unregister_chrdev(dev_ctx()->major_nr, DEVNAME);
     printk(KERN_INFO "dev/enigma: Done.\n");
-}
-
-static int dev_open(struct inode *ip, struct file *fp) {
-    mutex_lock(&g_dev_enigma.lock);
-
-    if (g_dev_enigma.has_open) {
-        mutex_unlock(&g_dev_enigma.lock);
-        return -EBUSY;
-    }
-
-    g_dev_enigma.has_open = 1;
-
-    mutex_unlock(&g_dev_enigma.lock);
-
-    return 0;
-}
-
-static int dev_release(struct inode *ip, struct file *fp) {
-    int result = 0;
-    mutex_lock(&g_dev_enigma.lock);
-
-    if (g_dev_enigma.has_open) {
-        g_dev_enigma.has_open = 0;
-    } else {
-        result = -EBADF;
-    }
-
-    mutex_unlock(&g_dev_enigma.lock);
-
-    return result;
-}
-
-static ssize_t dev_read(struct file *fp, char *buf, size_t len, loff_t *loff) {
-    return 0;
-}
-
-static ssize_t dev_write(struct file *fp, const char *buf, size_t len, loff_t *loff) {
-    return 0;
-}
-
-static long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
-    int result = 0;
-    libeel_enigma_ctx user_enigma;
-
-    switch (cmd) {
-
-        case ENIGMA_RESET:
-            if (g_dev_enigma.has_init) {
-
-                g_dev_enigma.has_init = libeel_init_machine(g_dev_enigma.enigma);
-
-                if (!g_dev_enigma.has_init) {
-                    result = -EINVAL;
-                } else if (g_dev_enigma.ebuf != NULL) {
-                    del_ebuf_ctx(g_dev_enigma.ebuf);
-                    g_dev_enigma.ebuf = NULL;
-                }
-
-            } else {
-                result = -EINVAL;
-            }
-            break;
-
-        case ENIGMA_SET:
-            if (!access_ok(VERIFY_READ, (void __user *)usr_param, _IOC_SIZE(cmd))) {
-                return -EFAULT;
-            }
-
-            user_enigma = *((libeel_enigma_ctx *)usr_param);
-
-            g_dev_enigma.enigma->left_rotor = user_enigma.left_rotor;
-            g_dev_enigma.enigma->middle_rotor = user_enigma.middle_rotor;
-            g_dev_enigma.enigma->right_rotor = user_enigma.right_rotor;
-
-            libeel_rotor_at(g_dev_enigma.enigma, l) = libeel_rotor_at(&user_enigma, l);
-            libeel_rotor_at(g_dev_enigma.enigma, m) = libeel_rotor_at(&user_enigma, m);
-            libeel_rotor_at(g_dev_enigma.enigma, r) = libeel_rotor_at(&user_enigma, r);
-
-            g_dev_enigma.enigma->reflector = user_enigma.reflector;
-
-            libeel_plugboard(g_dev_enigma.enigma, 1).l = libeel_plugboard(&user_enigma, 1).l;
-            libeel_plugboard(g_dev_enigma.enigma, 1).r = libeel_plugboard(&user_enigma, 1).r;
-            libeel_plugboard(g_dev_enigma.enigma, 2).l = libeel_plugboard(&user_enigma, 2).l;
-            libeel_plugboard(g_dev_enigma.enigma, 2).r = libeel_plugboard(&user_enigma, 2).r;
-            libeel_plugboard(g_dev_enigma.enigma, 3).l = libeel_plugboard(&user_enigma, 3).l;
-            libeel_plugboard(g_dev_enigma.enigma, 3).r = libeel_plugboard(&user_enigma, 3).r;
-            libeel_plugboard(g_dev_enigma.enigma, 4).l = libeel_plugboard(&user_enigma, 4).l;
-            libeel_plugboard(g_dev_enigma.enigma, 4).r = libeel_plugboard(&user_enigma, 4).r;
-            libeel_plugboard(g_dev_enigma.enigma, 5).l = libeel_plugboard(&user_enigma, 5).l;
-            libeel_plugboard(g_dev_enigma.enigma, 5).r = libeel_plugboard(&user_enigma, 5).r;
-            libeel_plugboard(g_dev_enigma.enigma, 6).l = libeel_plugboard(&user_enigma, 6).l;
-            libeel_plugboard(g_dev_enigma.enigma, 6).r = libeel_plugboard(&user_enigma, 6).r;
-
-            memset(&user_enigma, 0, sizeof(user_enigma));
-
-            if (!(g_dev_enigma.has_init = libeel_init_machine(g_dev_enigma.enigma))) {
-                result = -EINVAL;
-            } else if (g_dev_enigma.ebuf != NULL) {
-                del_ebuf_ctx(g_dev_enigma.ebuf);
-                g_dev_enigma.ebuf = NULL;
-            }
-            break;
-
-        default:
-            result = -EINVAL;
-            break;
-
-    }
-
-    return result;
 }
 
 module_init(enigma_init);
