@@ -5,7 +5,7 @@
  * the terms of the GNU General Public License version 2.
  *
  */
-#include "keel.h"
+#include "eel.h"
 #include "enigmactl.h"
 #include <linux/init.h>
 #include <linux/module.h>
@@ -13,6 +13,7 @@
 #include <linux/kernel.h>
 #include <linux/fs.h>
 #include <asm/uaccess.h>
+#include <linux/mutex.h>
 
 #define DEVNAME "enigma"
 #define CLASS_NAME "ems"
@@ -42,6 +43,8 @@ struct dev_enigma_ctx {
     struct class *device_class;
     struct device *device;
     int has_init;
+    int has_open;
+    struct mutex lock;
 };
 
 static struct dev_enigma_ctx g_dev_enigma = { 0 };
@@ -52,6 +55,7 @@ static int __init enigma_init(void) {
 
     if (g_dev_enigma.enigma == NULL) {
         printk(KERN_INFO "dev/enigma: Error during libeel_new_enigma_ctx().\n");
+        return 1;
     }
 
     g_dev_enigma.major_nr = register_chrdev(0, DEVNAME, &fops);
@@ -82,6 +86,8 @@ static int __init enigma_init(void) {
         return PTR_ERR(g_dev_enigma.device);
     }
 
+    mutex_init(&g_dev_enigma.lock);
+
     printk(KERN_INFO "dev/enigma: Done.\n");
 
     return 0;
@@ -100,11 +106,33 @@ static void __exit enigma_exit(void) {
 }
 
 static int dev_open(struct inode *ip, struct file *fp) {
+    mutex_lock(&g_dev_enigma.lock);
+
+    if (g_dev_enigma.has_open) {
+        mutex_unlock(&g_dev_enigma.lock);
+        return -EBUSY;
+    }
+
+    g_dev_enigma.has_open = 1;
+
+    mutex_unlock(&g_dev_enigma.lock);
+
     return 0;
 }
 
 static int dev_release(struct inode *ip, struct file *fp) {
-    return 0;
+    int result = 0;
+    mutex_lock(&g_dev_enigma.lock);
+
+    if (g_dev_enigma.has_open) {
+        g_dev_enigma.has_open = 0;
+    } else {
+        result = -EBADF;
+    }
+
+    mutex_unlock(&g_dev_enigma.lock);
+
+    return result;
 }
 
 static ssize_t dev_read(struct file *fp, char *buf, size_t len, loff_t *loff) {
