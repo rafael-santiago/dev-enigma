@@ -7,19 +7,22 @@
  */
 #include "dev_open.h"
 #include <dev_ctx.h>
-#include <linux/mutex.h>
+#include <linux/slab.h>
 
 int dev_open(struct inode *ip, struct file *fp) {
-    mutex_lock(&dev_ctx()->lock);
+    int uline = new_uline();
 
-    if (dev_ctx()->has_open) {
-        mutex_unlock(&dev_ctx()->lock);
+    if (uline == -1) {
         return -EBUSY;
     }
 
-    dev_ctx()->has_open = 1;
+    lock_uline(uline);
 
-    mutex_unlock(&dev_ctx()->lock);
+    fp->private_data = kmalloc(sizeof(uline), GFP_KERNEL);
+
+    *((int *)fp->private_data) = uline;
+
+    unlock_uline(uline);
 
     return 0;
 }

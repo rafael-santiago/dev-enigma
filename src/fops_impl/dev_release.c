@@ -6,19 +6,17 @@
  *
  */
 #include "dev_release.h"
+#include <linux/slab.h>
 #include <dev_ctx.h>
 
 int dev_release(struct inode *ip, struct file *fp) {
-    int result = 0;
-    mutex_lock(&dev_ctx()->lock);
-
-    if (dev_ctx()->has_open) {
-        dev_ctx()->has_open = 0;
-    } else {
-        result = -EBADF;
+    if (fp->private_data == NULL) {
+        return -EBADF;
     }
 
-    mutex_unlock(&dev_ctx()->lock);
+    release_uline(*(int *)fp->private_data);
 
-    return result;
+    kfree(fp->private_data);
+
+    return 0;
 }

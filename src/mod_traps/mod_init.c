@@ -31,44 +31,36 @@ static struct file_operations fops = {
 
 int __init enigma_init(void) {
     printk(KERN_INFO "dev/enigma: Initializing the /dev/enigma...\n");
-    dev_ctx()->enigma = libeel_new_enigma_ctx();
-
-    if (dev_ctx()->enigma == NULL) {
-        printk(KERN_INFO "dev/enigma: Error during libeel_new_enigma_ctx().\n");
-        return 1;
-    }
 
     dev_ctx()->major_nr = register_chrdev(0, DEVNAME, &fops);
 
     if (dev_ctx()->major_nr < 0) {
-        printk(KERN_INFO "dev/enigma: device registration has failed.\n");
+        printk(KERN_INFO "dev/enigma: Device registration has failed.\n");
         return dev_ctx()->major_nr;
     }
 
-    printk(KERN_INFO "dev/enigma: device registered under the number %d.\n", dev_ctx()->major_nr);
+    printk(KERN_INFO "dev/enigma: Device registered under the number %d.\n", dev_ctx()->major_nr);
 
     dev_ctx()->device_class = class_create(THIS_MODULE, CLASS_NAME);
 
     if (IS_ERR(dev_ctx()->device_class)) {
         unregister_chrdev(dev_ctx()->major_nr, DEVNAME);
-        printk(KERN_INFO "dev/enigma: class creating fail.\n");
+        printk(KERN_INFO "dev/enigma: Class creation fail.\n");
         return PTR_ERR(dev_ctx()->device_class);
     }
 
-    printk(KERN_INFO "dev/enigma: device class successfully created.\n");
+    printk(KERN_INFO "dev/enigma: Device class successfully created.\n");
 
     dev_ctx()->device = device_create(dev_ctx()->device_class, NULL, MKDEV(dev_ctx()->major_nr, 0), NULL, DEVNAME);
 
     if (IS_ERR(dev_ctx()->device)) {
         class_destroy(dev_ctx()->device_class);
         unregister_chrdev(dev_ctx()->major_nr, DEVNAME);
-        printk(KERN_INFO "dev/enigma: device creation fail.\n");
+        printk(KERN_INFO "dev/enigma: Device creation fail.\n");
         return PTR_ERR(dev_ctx()->device);
     }
 
-    mutex_init(&dev_ctx()->lock);
-
-    dev_ctx()->ebuf = NULL;
+    init_ulines();
 
     printk(KERN_INFO "dev/enigma: Done.\n");
 
