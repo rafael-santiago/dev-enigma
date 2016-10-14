@@ -1,0 +1,80 @@
+include ~/toolsets/gcc/gcc-app.hsl
+
+var sources type list;
+var includes type list;
+var cflags type list;
+var libraries type list;
+var ldflags type list;
+var appname type string;
+
+project incendiary-tests : toolset "gcc-c-app" : $sources, $includes, $cflags, $libraries, $ldflags, $appname;
+
+incendiary-tests.prologue() {
+    pontius_check();
+
+    $appname = "dev-enigma-tests";
+
+    $sources.ls(".*\\.c$");
+    $includes.add_item("../eel");
+    $includes.add_item("cutest/src");
+
+    var cwd type string;
+    $cwd = hefesto.sys.pwd();
+
+    if (hefesto.sys.cd("cutest/src")) {
+        hefesto.sys.forge("cutest", "Forgefile.hsl", "--obj-output-dir=obj --bin-output-dir=lib");
+        hefesto.sys.cd($cwd);
+    }
+
+    if (hefesto.sys.last_forge_result() != 0) {
+        hefesto.project.abort(hefesto.sys.last_forge_result());
+    }
+
+    $libraries.add_item("cutest/src/lib");
+    $ldflags.add_item("-lcutest");
+
+    if (hefesto.sys.os_name() == "linux") {
+        $ldflags.add_item("-ldl");
+        $ldflags.add_item("-lpthread");
+    }
+}
+
+incendiary-tests.epilogue() {
+    if (hefesto.sys.last_forge_result() == 0) {
+        var exit_code type int;
+        $exit_code = hefesto.sys.run(hefesto.sys.make_path("bin", $appname));
+        if ($exit_code != 0) {
+            hefesto.project.abort($exit_code);
+        }
+    }
+}
+
+local function pontius_check() : result type none {
+    var run_babe_run type list;
+    $run_babe_run = hefesto.sys.get_option("no-pontius-check");
+
+    if ($run_babe_run.count() == 0) {
+        var opt type string;
+        var answers type list;
+        $answers.add_item("y");
+        $answers.add_item("Y");
+        $answers.add_item("n");
+        $answers.add_item("N");
+        $opt = "?";
+        while ($answers.index_of($opt) == -1) {
+            $opt = hefesto.sys.prompt("=== WARNING: Now tests over a kernel module will be run.\n\n" +
+                                      "             If you have made changes over this LKM and you are not so sure about its basic correctness,\n" +
+                                      "             maybe you should avoid running it because you can get kernel panics among other amazing stuff.\n\n" +
+                                      "Q: Are you sure that you want to start a fir... err... to insert the generated module into your kernel and\n" +
+                                      "   test it by your own risk? [y/n] ");
+            if ($answers.index_of($opt) == -1) {
+                hefesto.sys.echo("\nYep, Hey Tux!... I see that we got a genius here man, let's try again... S l o w l y .   .       .\n\n");
+            }
+        }
+
+        if ($opt == "n" || $opt == "N") {
+            hefesto.sys.echo("\n~~~INFO: The module tests were aborted by the user.\n");
+            hefesto.project.abort(0);
+        }
+    }
+}

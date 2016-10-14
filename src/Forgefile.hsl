@@ -7,6 +7,7 @@
 #
 
 include ~/toolsets/linux/linux-module.hsl
+include run_test.hsl
 
 var includes type list;
 var cflags type list;
@@ -26,3 +27,10 @@ dev-enigma.prologue() {
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "fops_impl"));
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "mod_traps"));
 }
+
+dev-enigma.epilogue() {
+    if (hefesto.sys.last_forge_result() == 0) {
+        run_test();
+    }
+}
+

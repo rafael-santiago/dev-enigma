@@ -1,0 +1,34 @@
+#
+#                              Copyright (C) 2016 by Rafael Santiago
+#
+# This is free software. You can redistribute it and/or modify under
+# the terms of the GNU General Public License version 2.
+#
+#
+
+function run_test() : result type none {
+    var skip_test type list;
+    $skip_test = hefesto.sys.get_option("skip-test");
+    if ($skip_test.count() > 0) {
+        result 0;
+    }
+    if (hefesto.sys.cd("test")) {
+        var test_options type string;
+        $test_options = "--obj-output-dir=o --bin-output-dir=bin";
+
+        var devels_forge type list;
+        $devels_forge = hefesto.sys.get_option("devels-forge");
+
+        if ($devels_forge.count() == 0) {
+            $test_options = $test_options + " --no-pontius-check";
+        }
+        hefesto.sys.forge("incendiary-tests", "Forgefile.hsl", $test_options);
+        hefesto.sys.cd("..");
+        if (hefesto.sys.last_forge_result() != 0) {
+            hefesto.project.abort(hefesto.sys.last_forge_result());
+        }
+    } else {
+        hefesto.sys.echo("ERROR: Unable to run the tests.\n");
+        hefesto.project.abort(1);
+    }
+}
