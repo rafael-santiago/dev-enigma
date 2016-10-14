@@ -19,7 +19,7 @@
 
 struct dev_enigma_usage_line_ctx {
     libeel_enigma_ctx *enigma;
-    ebuf_ctx *ebuf, *tail;
+    ebuf_ctx *ebuf_head, *ebuf_tail;
     struct mutex lock;
     int has_init;
 };

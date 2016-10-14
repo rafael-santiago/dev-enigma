@@ -10,6 +10,6 @@
 
 #include <linux/fs.h>
 
-ssize_t dev_write(struct file *fp, const char *buf, size_t len, loff_t *loff);
+ssize_t dev_write(struct file *fp, const char __user *buf, size_t count, loff_t *f_pos);
 
 #endif

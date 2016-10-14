@@ -19,7 +19,7 @@ void del_ebuf_ctx(ebuf_ctx *ebuf) {
     }
 }
 
-void add_char_to_ebuf_ctx(ebuf_ctx **ebuf, const char c, ebuf_ctx *tail) {
+int add_char_to_ebuf_ctx(ebuf_ctx **ebuf, const char c, ebuf_ctx *tail) {
     ebuf_ctx *ep;
 
     if ((*ebuf) == NULL) {
@@ -37,7 +37,7 @@ void add_char_to_ebuf_ctx(ebuf_ctx **ebuf, const char c, ebuf_ctx *tail) {
     }
 
     if (ep == NULL) {
-        return;
+        return 0;
     }
 
     if (tail != NULL) {
@@ -45,6 +45,8 @@ void add_char_to_ebuf_ctx(ebuf_ctx **ebuf, const char c, ebuf_ctx *tail) {
     }
 
     ep->c = c;
+
+    return 1;
 }
 
 char get_char_from_ebuf_ctx(ebuf_ctx **ebuf) {

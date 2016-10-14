@@ -13,7 +13,7 @@ typedef struct _ebuf_ctx {
     struct _ebuf_ctx *next;
 }ebuf_ctx;
 
-void add_char_to_ebuf_ctx(ebuf_ctx **ebuf, const char c, ebuf_ctx *tail);
+int add_char_to_ebuf_ctx(ebuf_ctx **ebuf, const char c, ebuf_ctx *tail);
 
 char get_char_from_ebuf_ctx(ebuf_ctx **ebuf);
 

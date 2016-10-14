@@ -60,9 +60,9 @@ void release_uline(const int uline) {
         g_dev_ctx.ulines[uline].enigma = NULL;
     }
 
-    if (g_dev_ctx.ulines[uline].ebuf != NULL) {
-        del_ebuf_ctx(g_dev_ctx.ulines[uline].ebuf);
-        g_dev_ctx.ulines[uline].ebuf = NULL;
+    if (g_dev_ctx.ulines[uline].ebuf_head != NULL) {
+        del_ebuf_ctx(g_dev_ctx.ulines[uline].ebuf_head);
+        g_dev_ctx.ulines[uline].ebuf_head = NULL;
     }
 
     unlock_uline(uline);
@@ -84,7 +84,7 @@ void init_ulines(void) {
     int u;
     for (u = 0; u < DEV_USAGE_LINES_NR; u++) {
         g_dev_ctx.ulines[u].enigma = NULL;
-        g_dev_ctx.ulines[u].ebuf = NULL;
+        g_dev_ctx.ulines[u].ebuf_head = NULL;
         mutex_init(&g_dev_ctx.ulines[u].lock);
         g_dev_ctx.ulines[u].has_init = 0;
     }

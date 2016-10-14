@@ -31,9 +31,9 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
 
                 if (!ulp->has_init) {
                     result = -EINVAL;
-                } else if (ulp->ebuf != NULL) {
-                    del_ebuf_ctx(ulp->ebuf);
-                    ulp->ebuf = NULL;
+                } else if (ulp->ebuf_head != NULL) {
+                    del_ebuf_ctx(ulp->ebuf_head);
+                    ulp->ebuf_head = NULL;
                 }
 
             } else {
@@ -75,9 +75,9 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
 
             if (!(ulp->has_init = libeel_init_machine(ulp->enigma))) {
                 result = -EINVAL;
-            } else if (ulp->ebuf != NULL) {
-                del_ebuf_ctx(ulp->ebuf);
-                ulp->ebuf = NULL;
+            } else if (ulp->ebuf_head != NULL) {
+                del_ebuf_ctx(ulp->ebuf_head);
+                ulp->ebuf_head = NULL;
             }
             break;
 

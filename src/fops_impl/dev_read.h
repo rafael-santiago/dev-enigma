@@ -10,6 +10,6 @@
 
 #include <linux/fs.h>
 
-ssize_t dev_read(struct file *fp, char *buf, size_t len, loff_t *loff);
+ssize_t dev_read(struct file *fp, char __user *buf, size_t count, loff_t *f_pos);
 
 #endif
