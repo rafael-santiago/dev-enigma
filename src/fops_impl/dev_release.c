@@ -17,6 +17,7 @@ int dev_release(struct inode *ip, struct file *fp) {
     release_uline(*(int *)fp->private_data);
 
     kfree(fp->private_data);
+    fp->private_data = NULL;
 
     return 0;
 }

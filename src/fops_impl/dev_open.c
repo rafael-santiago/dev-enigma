@@ -18,12 +18,14 @@ int dev_open(struct inode *ip, struct file *fp) {
 
     lock_uline(uline);
 
-    fp->private_data = kmalloc(sizeof(uline), GFP_KERNEL);
+    fp->private_data = kmalloc(sizeof(int), GFP_KERNEL);
 
-    *((int *)fp->private_data) = uline;
+    if (fp->private_data != NULL) {
+        *((int *)fp->private_data) = uline;
+    }
 
     unlock_uline(uline);
 
-    return 0;
+    return (fp->private_data != NULL) ? 0 : -ENOMEM;
 }
 

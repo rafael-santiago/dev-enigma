@@ -22,6 +22,7 @@
 #include <linux/mutex.h>
 
 static struct file_operations fops = {
+    .owner = THIS_MODULE,
     .open = dev_open,
     .release = dev_release,
     .read = dev_read,
