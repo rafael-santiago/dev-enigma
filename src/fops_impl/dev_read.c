@@ -20,7 +20,7 @@ ssize_t dev_read(struct file *fp, char __user *buf, size_t count, loff_t *f_pos)
 
     ulp = dev_uline_ctx(uline);
 
-    if (ulp != NULL) {
+    if (ulp == NULL) {
         return -EBADF;
     }
 
