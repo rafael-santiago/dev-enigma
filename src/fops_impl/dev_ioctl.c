@@ -12,7 +12,7 @@
 #include <asm/uaccess.h>
 
 long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
-    int result = 0;
+    long result = 0;
     libeel_enigma_ctx user_enigma;
     struct dev_enigma_usage_line_ctx *ulp;
 
