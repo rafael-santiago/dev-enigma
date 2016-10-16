@@ -21,7 +21,8 @@ tux@sché:~/Bletchley/helios# cd helios
 tux@sché:~/Bletchley# hefesto --install=lnx-toolsets
 ```
 
-If you want to you can remove your ``Helios`` local directory.
+After executing the commands above your ``Hefesto`` copy will start to know how to build
+``Linux modules``. If you want to you can remove your ``Helios`` local directory.
 
 Now, to build this ``device`` you should jump to its ``src`` sub-directory and:
 
