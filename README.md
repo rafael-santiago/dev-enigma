@@ -157,8 +157,8 @@ its ``README``. I will abstract these details here. However it is pretty simple.
 
 So, you need two "alien" ``includes`` to compile this sample:
 
-- eel.h
-- enigmactl.h
+- ``eel.h``
+- ``enigmactl.h``
 
 The ``Libeel`` follows embedded into ``/dev/enigma`` source code and all stuff of it is located under ``src/eel``.
 
@@ -214,14 +214,14 @@ now this kind of code is up to you.
 
 ### What are usage lines?
 
-Usage lines the way of dividing the ``Enigma device`` present in your system among several users. Several but not
-inifity, in fact I have fixed the number of usage lines for ``10``. By default, it is possible to have ten users
-simultaneously hung in this device.
+Usage lines is the way of dividing the ``Enigma device`` present in your system among several users. Several but not
+inifity, in fact, I have fixed the number of usage lines for ``10``. By default, it is possible to have ten users
+simultaneously hung in this device. On normal conditions, is expected that none of them step on the foot of other.
 
 ### Best practices
 
 This is just a ``toy device`` so I have used a bunch of things that is not so advised for being used into real-world
-devices. Like ``kmalloc``. Among other issues, it imposes a limit of ``128 kb`` (more or less) to the passed data
+devices. Like ``kmalloc``. Among other issues, it imposes a limit of ``128kb`` (more or less) to the passed data
 buffers. Do not try to pass huge buffers to your ``Enigma device`` do not be so stupid. It will not put fire on
 your ``kernel`` but will cause malfunction in your ``char device``.
 
