@@ -205,7 +205,7 @@ libeel_enigma_ctx enigma_conf;
 ioctl(dev, ENIGMA_SET, &enigma_conf);
 ```
 
-Once the settings accepted, anytime you can reverted the device to its initial state, just by:
+Once the settings accepted, anytime you can revert the device to its initial state, just by:
 
 ```c
 ioctl(dev, ENIGMA_RESET);
@@ -218,7 +218,7 @@ now this kind of code is up to you.
 ### What are usage lines?
 
 Usage lines is the way of dividing the ``Enigma device`` present in your system among several users. Several but not
-inifity, in fact, I have fixed the number of usage lines for ``10``. By default, it is possible to have ten users
+inifite, in fact, I have fixed the number of usage lines for ``10``. By default, it is possible to have ten users
 simultaneously hung in this device. On normal conditions, is expected that none of them step on the foot of other.
 
 ### Best practices
