@@ -41,6 +41,7 @@ The usage of this device is pretty straightforward. You should:
 2. Set the Enigma configurations through an ``i/o control``.
 3. ``Write``.
 4. ``Read``.
+5. ``Close`` (just because you are polite).
 
 Follows all it in plain *C*:
 
