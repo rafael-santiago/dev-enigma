@@ -209,8 +209,8 @@ ioctl(dev, ENIGMA_RESET);
 ```
 
 Of course that this sample is pretty dull because it is kind of statical. You should to implement an application
-which receives the enigma settings by command line and also the data buffer. Well, the device is done now this
-kind of code is up to you.
+which receives the ``Enigma machine`` settings by command line and also the data buffer. Well, the device is done
+now this kind of code is up to you.
 
 ### What are usage lines?
 
