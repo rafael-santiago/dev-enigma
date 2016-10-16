@@ -143,7 +143,9 @@ int main(int argc, char **argv) {
     printf("PLAINTEXT: %s\n\nThat's all folks!!\n", buf);
 
 ___go_home:
-    close(fd);
+    if (fd > 0) {
+        close(fd);
+    }
 
     return exit_code;
 }
