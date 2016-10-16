@@ -12,7 +12,7 @@
 
 void del_ebuf_ctx(ebuf_ctx *ebuf) {
     ebuf_ctx *t, *p;
-    for (t = p = ebuf; p; p = t) {
+    for (t = p = ebuf; t != NULL; p = t) {
         t = p->next;
         p->c = 0;
         kfree(p);
