@@ -14,12 +14,7 @@
 #include <dev_read.h>
 #include <dev_write.h>
 #include <dev_ioctl.h>
-#include <linux/module.h>
 #include <linux/device.h>
-#include <linux/kernel.h>
-#include <linux/fs.h>
-#include <asm/uaccess.h>
-#include <linux/mutex.h>
 
 static struct file_operations fops = {
     .owner = THIS_MODULE,

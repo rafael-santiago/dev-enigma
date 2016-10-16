@@ -155,6 +155,35 @@ CUTE_TEST_CASE(devio_close_tests)
     CUTE_ASSERT(system("rmmod enigma") == 0);
 CUTE_TEST_CASE_END
 
+CUTE_TEST_CASE(usage_lines_tests)
+    const int usage_lines_nr = 10;
+    int fd[usage_lines_nr];
+    int f;
+
+    CUTE_ASSERT(system("insmod ../enigma.ko") == 0);
+
+    for (f = 0; f < usage_lines_nr; f++) {
+        fd[f] = open("/dev/enigma", O_RDWR);
+        CUTE_ASSERT(fd[f] > -1);
+    }
+
+    f = open("/dev/enigma", O_RDWR);
+    CUTE_ASSERT(f != 0);
+
+    CUTE_ASSERT(close(fd[0]) == 0);
+
+    f = open("/dev/enigma", O_RDWR);
+    CUTE_ASSERT(f > -1);
+
+    CUTE_ASSERT(close(f) == 0);
+
+    for (f = 1; f < usage_lines_nr; f++) {
+        CUTE_ASSERT(close(fd[f]) == 0);
+    }
+
+    CUTE_ASSERT(system("rmmod enigma") == 0);
+CUTE_TEST_CASE_END
+
 CUTE_TEST_CASE_SUITE(device_poking_tests)
     CUTE_RUN_TEST(devio_open_tests);
     CUTE_RUN_TEST(devio_ioctlset_tests);
@@ -169,6 +198,7 @@ CUTE_TEST_CASE_SUITE_END
 CUTE_TEST_CASE(device_tests)
     CUTE_RUN_TEST(lkm_ins_rm_tests);
     CUTE_RUN_TEST(dev_ctls_tests);
+    CUTE_RUN_TEST(usage_lines_tests);
     CUTE_RUN_TEST_SUITE(device_poking_tests);
 CUTE_TEST_CASE_END
 
