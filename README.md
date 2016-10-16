@@ -3,7 +3,9 @@
 This is a way to put an ``Enigma Machine`` under your ``Linux /dev`` sub-directory.
 Yes, it is about a ``Linux char device`` which emulates an ``Enigma``.
 
-Until now I have written it to run on ``2.6.x kernels``.
+Until now I have written it to run on ``2.6.x kernels``. Maybe with a little change
+on the ``dev_ioctl()`` prototype you can be able to build it on ``2.4.x kernels``
+but I am not so sure about.
 
 ## How to build it?
 
@@ -226,7 +228,7 @@ simultaneously hung in this device. On normal conditions, is expected that none 
 This is just a ``toy device`` so I have used a bunch of things that is not so advised for being used into real-world
 devices. Like ``kmalloc``. Among other issues, it imposes a limit of ``128kb`` (more or less) to the passed data
 buffers. Do not try to pass huge buffers to your ``Enigma device`` do not be so stupid. Still, do not write for a
-long time without perform any read. These things will not put fire on your ``kernel`` but will cause malfunction in
+long time without performing any read. These things will not put fire on your ``kernel`` but will cause malfunction in
 your ``char device``.
 
 ## How to install it?
