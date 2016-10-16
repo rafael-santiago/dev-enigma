@@ -225,8 +225,9 @@ simultaneously hung in this device. On normal conditions, is expected that none 
 
 This is just a ``toy device`` so I have used a bunch of things that is not so advised for being used into real-world
 devices. Like ``kmalloc``. Among other issues, it imposes a limit of ``128kb`` (more or less) to the passed data
-buffers. Do not try to pass huge buffers to your ``Enigma device`` do not be so stupid. It will not put fire on
-your ``kernel`` but will cause malfunction in your ``char device``.
+buffers. Do not try to pass huge buffers to your ``Enigma device`` do not be so stupid. Still, do not write for a
+long time without perform any read. These things will not put fire on your ``kernel`` but will cause malfunction in
+your ``char device``.
 
 ## How to install it?
 
