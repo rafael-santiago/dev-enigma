@@ -190,10 +190,10 @@ That's all folks!!
 
 The presented sample introduces an ``i/o`` control that is useful in cases in that you want to return your
 ``Enigma`` to its initial state. There you have used it in order to decrypt the previous encrypted buffer.
-So, as you know the ``Enigma`` is about a reciprocal cipher. Like ``albam``, ``atbash`` or even our modern
-over used ``xor``.
+So, as you know the ``Enigma`` is about a reciprocal cipher. Like ``albam``, ``atbash`` or even our ultra
+modern over used ``xor``.
 
-Of course that this simple is pretty dull because it is kind of statical. You should to implement an application
+Of course that this sample is pretty dull because it is kind of statical. You should to implement an application
 which receives the enigma settings by command line and also the data buffer. Well, the device is done now this
 kind of code is up to you.
 
