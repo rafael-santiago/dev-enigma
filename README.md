@@ -3,9 +3,17 @@
 This is a way to put an ``Enigma Machine`` under your ``Linux /dev`` sub-directory.
 Yes, it is about a ``Linux char device`` which emulates an ``Enigma``.
 
-Until now I have written it to run on ``2.6.x kernels``. Maybe with a little change
-on the ``dev_ioctl()`` prototype you can be able to build it on ``2.4.x kernels``
-but I am not so sure about.
+Until now I have written it to run on ``2.6.x`` or higher kernel versions. Maybe with a
+little change on the ``dev_ioctl()`` prototype you can be able to build it on ``2.4.x``
+kernels but I am not so sure about.
+
+## How to clone it?
+
+The easiest way is:
+
+```
+tux@sché:~/Bletchley# git clone https://github.com/rafael-santiago/dev-enigma dev-enigma --recursive
+```
 
 ## How to build it?
 

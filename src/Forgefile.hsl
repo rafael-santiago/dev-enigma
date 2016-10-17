@@ -31,7 +31,20 @@ dev-enigma.prologue() {
 
 dev-enigma.epilogue() {
     if (hefesto.sys.last_forge_result() == 0) {
+        forge_user_enigmactl();
         run_test();
     }
 }
 
+local function forge_user_enigmactl() : result type none {
+    var cwd type string;
+    $cwd = hefesto.sys.pwd();
+
+    if (hefesto.sys.cd("enigmactl/user")) {
+        hefesto.sys.forge("enigmactl", "Forgefile.hsl", "--obj-output-dir=o --bin-output-dir=bin");
+        hefesto.sys.cd($cwd);
+        if (hefesto.sys.last_forge_result() != 0) {
+            hefesto.project.abort(hefesto.sys.last_forge_result());
+        }
+    }
+}
