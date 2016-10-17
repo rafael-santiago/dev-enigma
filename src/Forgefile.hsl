@@ -26,6 +26,7 @@ dev-enigma.prologue() {
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "dev_ctx"));
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "fops_impl"));
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "mod_traps"));
+    $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "enigmactl"));
 }
 
 dev-enigma.epilogue() {

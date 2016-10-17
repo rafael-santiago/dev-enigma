@@ -25,7 +25,7 @@ incendiary-tests.prologue() {
     $sources.ls(".*\\.c$");
     $includes.add_item("../eel");
     $includes.add_item("cutest/src");
-    $includes.add_item("../fops_impl");
+    $includes.add_item("../enigmactl");
 
     var cwd type string;
     $cwd = hefesto.sys.pwd();

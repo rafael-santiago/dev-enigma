@@ -6,7 +6,7 @@
  *
  */
 #include "dev_ioctl.h"
-#include "enigmactl.h"
+#include <enigmactl.h>
 #include <dev_ctx.h>
 #include <eel.h>
 #include <asm/uaccess.h>

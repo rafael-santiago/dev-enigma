@@ -1,3 +1,6 @@
 [submodule "src/test/cutest"]
 	path = src/test/cutest
 	url = https://github.com/rafael-santiago/cutest
+[submodule "src/enigmactl/user/eel"]
+	path = src/enigmactl/user/eel
+	url = https://github.com/rafael-santiago/eel

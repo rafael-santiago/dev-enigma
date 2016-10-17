@@ -1,0 +1,39 @@
+#
+#                              Copyright (C) 2016 by Rafael Santiago
+#
+# This is free software. You can redistribute it and/or modify under
+# the terms of the GNU General Public License version 2.
+#
+#
+
+include ~/toolsets/gcc/gcc-app.hsl
+
+var sources type list;
+var includes type list;
+var cflags type list;
+var libraries type list;
+var ldflags type list;
+
+project enigmactl : toolset "gcc-c-app" : $sources, $includes, $cflags, $libraries, $ldflags, "enigmactl";
+
+enigmactl.prologue() {
+    forge_eel();
+
+    $sources.ls(".*\\.c$");
+    $includes.add_item("../");
+    $includes.add_item("../../mod_traps");
+    $includes.add_item("eel/src");
+
+    $libraries.add_item("eel/src/lib");
+    $ldflags.add_item("-leel");
+}
+
+function forge_eel() : result type none {
+    if (hefesto.sys.cd("eel/src")) {
+        hefesto.sys.forge("libeel", "Forgefile.hsl", "--bin-output-dir=lib --obj-output-dir=o");
+        hefesto.sys.cd("../..");
+        if (hefesto.sys.last_forge_result() != 0) {
+            hefesto.project.abort(hefesto.sys.last_forge_result());
+        }
+    }
+}
