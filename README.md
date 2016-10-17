@@ -241,7 +241,7 @@ now this kind of code is up to you.
 ### What are usage lines?
 
 Usage lines is the way of dividing the ``Enigma device`` present in your system among several users. Several but not
-inifite, in fact, I have fixed the number of usage lines for ``10``. By default, it is possible to have ten users
+inifite, in fact, I have fixed the number of usage lines to ``10``. By default, it is possible to have ten users
 simultaneously hung in this device. On normal conditions, is expected that none of them step on the foot of other.
 
 ### Best practices
