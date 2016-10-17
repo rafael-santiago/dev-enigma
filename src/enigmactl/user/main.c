@@ -16,13 +16,13 @@
 #include <unistd.h>
 
 static int enigmactl_help(void) {
-    if (get_bool_option("reset", 0)) {
-        printf("usage: enigmactl --reset\n");
-    } else if (get_bool_option("set", 0)) {
-        printf("usage: enigmactl --set --l-rotor=<rotor> --m-rotor=<rotor> --r-rotor=<rotor> --l-rotor-at=<letter> --m-rotor-at=<letter> --r-rotor-at=<letter> [--l-ring=<pos> --m-ring=<pos> --r-ring=<pos> --plugboard=SWP1/SWP1',...,SWP6/SWP6']\n");
+    if (get_bool_option("reset-usage-line", 0)) {
+        printf("usage: enigmactk --reset-usage-line\n");
+    } else if (get_bool_option("set-usage-line", 0)) {
+        printf("usage: enigmactl --set-usage-line --l-rotor=<rotor> --m-rotor=<rotor> --r-rotor=<rotor> --l-rotor-at=<letter> --m-rotor-at=<letter> --r-rotor-at=<letter> [--l-ring=<pos> --m-ring=<pos> --r-ring=<pos> --plugboard=SWP1/SWP1',...,SWP6/SWP6']\n");
     } else {
         printf("usage: enigmactl --<operation> args...\n\n"
-               "By the way, the operations are: 'set', 'reset' and 'help'.\n\n"
+               "By the way, the operations are: 'set-usage-line', 'reset-usage-line' and 'help'.\n\n"
                "enigmactl is Copyright (C) 2016 by Rafael Santiago.\n"
                "Bug reports, feedback, etc: <voidbrainvoid@gmail.com> or <https://github.com/rafael-santiago/dev-enigma/issues>\n");
     }
@@ -81,11 +81,11 @@ int main(int argc, char **argv) {
         return enigmactl_help();
     }
 
-    if (get_bool_option("reset", 0)) {
+    if (get_bool_option("reset-usage-line", 0)) {
         return enigmactl_reset();
     }
 
-    if (get_bool_option("set", 0)) {
+    if (get_bool_option("set-usage-line", 0)) {
         return enigmactl_set();
     }
 

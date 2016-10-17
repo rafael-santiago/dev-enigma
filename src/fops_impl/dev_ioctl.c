@@ -100,6 +100,14 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
             unlock_uline(uline);
             break;
 
+        case ENIGMA_USAGE_LINE_RESET:
+            //  TODO.
+            break;
+
+        case ENIGMA_USAGE_LINE_SET:
+            //  TODO.
+            break;
+
         default:
             result = -EINVAL;
             break;

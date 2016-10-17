@@ -28,6 +28,10 @@ static int is_valid_plugboard(const char *data);
 
 static int is_valid_rotor_pos(const char *data);
 
+static int get_reflector_value(const char *data);
+
+static int is_valid_reflector(const char *data);
+
 
 typedef int (*plugboard_verifier)(int c);
 
@@ -58,12 +62,25 @@ static void ld_r_ring(libeel_enigma_ctx *enigma, const char *data);
 
 static void ld_plugboard(libeel_enigma_ctx *enigma, const char *data);
 
+static void ld_reflector(libeel_enigma_ctx *enigma, const char *data);
+
 static int isnext(int c) {
     return (c == ',' || c == 0);
 }
 
 static int isbar(int c) {
     return (c == '/');
+}
+
+static int get_reflector_value(const char *data) {
+    if (!(data != NULL && strlen(data) == 1 && tolower(*data) == 'c' || tolower(*data) == 'b')) {
+        return -1;
+    }
+    return (tolower(*data) - 'b');
+}
+
+static int is_valid_reflector(const char *data) {
+    return (get_reflector_value(data) != -1);
 }
 
 static int is_valid_number(const char *data) {
@@ -264,6 +281,10 @@ static void ld_plugboard(libeel_enigma_ctx *enigma, const char *data) {
     }
 }
 
+static void ld_reflector(libeel_enigma_ctx *enigma, const char *data) {
+    enigma->reflector = get_reflector_value(data);
+}
+
 // WARN(Santiago): Go to sleep! :)
 
 libeel_enigma_ctx *ld_enigma_setting(void) {
@@ -283,14 +304,15 @@ libeel_enigma_ctx *ld_enigma_setting(void) {
         { "l-ring",     0, is_valid_ring,      ld_l_ring      },
         { "m-ring",     0, is_valid_ring,      ld_m_ring      },
         { "r-ring",     0, is_valid_ring,      ld_r_ring      },
+        { "reflector",  1, is_valid_reflector, ld_reflector   },
         { "plugboard",  0, is_valid_plugboard, ld_plugboard   }
     };
     const size_t ld_program_size = sizeof(ld_program) / sizeof(ld_program[0]);
     char *data = NULL;
-    size_t program_counter = 0;
+    ssize_t program_counter = -1;
     libeel_enigma_ctx *enigma = libeel_new_enigma_ctx();
 
-    while (program_counter++ < ld_program_size) {
+    while (++program_counter < ld_program_size) {
         data = get_option(ld_program[program_counter].option, NULL);
 
         if (data == NULL && !ld_program[program_counter].mandatory) {
