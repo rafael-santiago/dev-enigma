@@ -24,7 +24,9 @@ ssize_t dev_read(struct file *fp, char __user *buf, size_t count, loff_t *f_pos)
         return -EBADF;
     }
 
-    lock_uline(uline);
+    if (!lock_uline(uline)) {
+        return -EBUSY;
+    }
 
     while (read_bytes != count && ulp->ebuf_head != NULL) {
         byte = get_char_from_ebuf_ctx(&ulp->ebuf_head);

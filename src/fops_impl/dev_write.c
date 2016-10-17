@@ -33,7 +33,9 @@ ssize_t dev_write(struct file *fp, const char __user *buf, size_t count, loff_t 
         return -EFAULT;
     }
 
-    lock_uline(uline);
+    if (!lock_uline(uline)) {
+        return -EBUSY;
+    }
 
     bp = buf;
     bp_end = bp + count;

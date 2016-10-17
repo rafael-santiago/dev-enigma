@@ -16,11 +16,16 @@ struct dev_enigma_ctx *dev_ctx(void) {
     return &g_dev_ctx;
 }
 
-void lock_uline(const int uline) {
+int lock_uline(const int uline) {
     if (!(uline >= 0 && uline <= DEV_USAGE_LINES_NR)) {
-        return;
+        return 0;
     }
-    mutex_lock(&g_dev_ctx.ulines[uline].lock);
+
+    if (!mutex_trylock(&g_dev_ctx.ulines[uline].lock)) {
+        return 0;
+    }
+
+    return 1;
 }
 
 void unlock_uline(const int uline) {
@@ -66,8 +71,6 @@ void release_uline(const int uline) {
     }
 
     unlock_uline(uline);
-
-    mutex_destroy(&g_dev_ctx.ulines[uline].lock);
 }
 
 struct dev_enigma_usage_line_ctx *dev_uline_ctx(const int uline) {
@@ -96,5 +99,6 @@ void deinit_ulines(void) {
     int u;
     for (u = 0; u < DEV_USAGE_LINES_NR; u++) {
         release_uline(u);
+        mutex_destroy(&g_dev_ctx.ulines[u].lock);
     }
 }

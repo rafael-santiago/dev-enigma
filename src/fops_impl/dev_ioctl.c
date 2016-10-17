@@ -15,17 +15,28 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
     long result = 0;
     libeel_enigma_ctx user_enigma;
     struct dev_enigma_usage_line_ctx *ulp;
+    int uline;
 
     if (fp->private_data == NULL) {
         return -EINVAL;
     }
 
-    ulp = dev_uline_ctx(*(int *)fp->private_data);
+    uline = *(int *)fp->private_data;
+
+    ulp = dev_uline_ctx(uline);
+
+    if (ulp == NULL) {
+        return -EINVAL;
+    }
 
     switch (cmd) {
 
         case ENIGMA_RESET:
             if (ulp->has_init) {
+
+                if (!lock_uline(uline)) {
+                    return -EBUSY;
+                }
 
                 ulp->has_init = libeel_init_machine(ulp->enigma);
 
@@ -36,6 +47,8 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
                     ulp->ebuf_head = NULL;
                 }
 
+                unlock_uline(uline);
+
             } else {
                 result = -EINVAL;
             }
@@ -44,6 +57,10 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
         case ENIGMA_SET:
             if (!access_ok(VERIFY_READ, (void __user *)usr_param, _IOC_SIZE(cmd))) {
                 return -EFAULT;
+            }
+
+            if (!lock_uline(uline)) {
+                return -EBUSY;
             }
 
             user_enigma = *((libeel_enigma_ctx *)usr_param);
@@ -79,6 +96,8 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
                 del_ebuf_ctx(ulp->ebuf_head);
                 ulp->ebuf_head = NULL;
             }
+
+            unlock_uline(uline);
             break;
 
         default:

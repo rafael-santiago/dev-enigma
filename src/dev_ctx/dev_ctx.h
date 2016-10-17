@@ -35,7 +35,7 @@ struct dev_enigma_ctx *dev_ctx(void);
 
 libeel_enigma_ctx *dev_enigma(const int uline);
 
-void lock_uline(const int uline);
+int lock_uline(const int uline);
 
 void unlock_uline(const int uline);
 
@@ -48,5 +48,7 @@ struct dev_enigma_usage_line_ctx *dev_uline_ctx(const int uline);
 void init_ulines(void);
 
 void deinit_ulines(void);
+
+void destroy_uline_mutexes(void);
 
 #endif
