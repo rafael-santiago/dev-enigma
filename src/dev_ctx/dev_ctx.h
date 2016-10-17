@@ -29,6 +29,8 @@ struct dev_enigma_ctx {
     int major_nr;
     struct class *device_class;
     struct device *device;
+    libeel_enigma_ctx *default_setting;
+    struct mutex lock;
 };
 
 struct dev_enigma_ctx *dev_ctx(void);
@@ -50,5 +52,7 @@ void init_ulines(void);
 void deinit_ulines(void);
 
 void destroy_uline_mutexes(void);
+
+int set_default_enigma_setting(const libeel_enigma_ctx *enigma);
 
 #endif

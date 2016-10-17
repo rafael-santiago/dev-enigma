@@ -48,6 +48,10 @@ CUTE_TEST_CASE(dev_ctls_tests)
 
     CUTE_ASSERT(ioctl(fd, ENIGMA_RESET) != 0);
 
+    CUTE_ASSERT(ioctl(fd, ENIGMA_SET, NULL) != 0);
+
+    CUTE_ASSERT(ioctl(fd, ENIGMA_SET_DEFAULT_SETTING, NULL) != 0);
+
     daily_setting.left_rotor = i;
     daily_setting.middle_rotor = iv;
     daily_setting.right_rotor = i;
@@ -77,9 +81,13 @@ CUTE_TEST_CASE(dev_ctls_tests)
 
     CUTE_ASSERT(ioctl(fd, ENIGMA_SET, &daily_setting) != 0);
 
+    CUTE_ASSERT(ioctl(fd, ENIGMA_SET_DEFAULT_SETTING, &daily_setting) != 0);
+
     daily_setting.right_rotor = vii;
 
     CUTE_ASSERT(ioctl(fd, ENIGMA_SET, &daily_setting) == 0);
+
+    CUTE_ASSERT(ioctl(fd, ENIGMA_SET_DEFAULT_SETTING, &daily_setting) == 0);
 
     CUTE_ASSERT(ioctl(fd, ENIGMA_RESET) == 0);
 
@@ -91,7 +99,6 @@ CUTE_TEST_CASE(dev_ctls_tests)
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(devio_open_tests)
-    CUTE_ASSERT(system("insmod ../enigma.ko") == 0);
     devfd = open("/dev/enigma", O_RDWR);
     CUTE_ASSERT(devfd > -1);
 CUTE_TEST_CASE_END
@@ -116,6 +123,33 @@ CUTE_TEST_CASE(devio_ioctlset_tests)
     libeel_rotor_at(&dev_enigma, r) = 'Z';
 
     CUTE_ASSERT(ioctl(devfd, ENIGMA_SET, &dev_enigma) == 0);
+CUTE_TEST_CASE_END
+
+CUTE_TEST_CASE(devio_ioctldefaultset_tests)
+    libeel_enigma_ctx dev_enigma;
+    int devfd;
+
+    CUTE_ASSERT((devfd = open("/dev/enigma", O_RDWR)) > -1);
+
+    memset(&dev_enigma, 0, sizeof(dev_enigma));
+
+    dev_enigma.left_rotor = i;
+    dev_enigma.middle_rotor = ii;
+    dev_enigma.right_rotor = iii;
+
+    libeel_ring(&dev_enigma, l) = 1;
+    libeel_ring(&dev_enigma, m) = 1;
+    libeel_ring(&dev_enigma, r) = 1;
+
+    dev_enigma.reflector = b;
+
+    libeel_rotor_at(&dev_enigma, l) = 'A';
+    libeel_rotor_at(&dev_enigma, m) = 'A';
+    libeel_rotor_at(&dev_enigma, r) = 'Z';
+
+    CUTE_ASSERT(ioctl(devfd, ENIGMA_SET_DEFAULT_SETTING, &dev_enigma) == 0);
+
+    CUTE_ASSERT(close(devfd) == 0);
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(devio_write_tests)
@@ -152,7 +186,6 @@ CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(devio_close_tests)
     CUTE_ASSERT(close(devfd) == 0);
-    CUTE_ASSERT(system("rmmod enigma") == 0);
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(usage_lines_tests)
@@ -185,6 +218,8 @@ CUTE_TEST_CASE(usage_lines_tests)
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE_SUITE(device_poking_tests)
+    CUTE_ASSERT(system("insmod ../enigma.ko") == 0);
+
     CUTE_RUN_TEST(devio_open_tests);
     CUTE_RUN_TEST(devio_ioctlset_tests);
     CUTE_RUN_TEST(devio_write_tests);
@@ -193,9 +228,32 @@ CUTE_TEST_CASE_SUITE(device_poking_tests)
     CUTE_RUN_TEST(devio_write_inv_tests);
     CUTE_RUN_TEST(devio_read_inv_tests);
     CUTE_RUN_TEST(devio_close_tests);
+
+    CUTE_ASSERT(system("rmmod enigma") == 0);
+
+    CUTE_ASSERT(system("insmod ../enigma.ko") == 0);
+
+    CUTE_RUN_TEST(devio_ioctldefaultset_tests);
+
+    //  INFO(Santiago): We are expecting the same result
+    //                  even without a regular ioctl(ENIGMA_SET).
+    CUTE_RUN_TEST(devio_open_tests);
+    CUTE_RUN_TEST(devio_write_tests);
+    CUTE_RUN_TEST(devio_read_tests);
+    CUTE_RUN_TEST(devio_ioctlreset_tests);
+    CUTE_RUN_TEST(devio_write_inv_tests);
+    CUTE_RUN_TEST(devio_read_inv_tests);
+    CUTE_RUN_TEST(devio_close_tests);
+
+    CUTE_ASSERT(system("rmmod enigma") == 0);
 CUTE_TEST_CASE_SUITE_END
 
 CUTE_TEST_CASE(device_tests)
+    printf("\n\n\033[1m\033[31m"
+           "*** Hello Human, step back, I will test the \"enigma.ko\" within 5 secs.\n"
+           "    In case of some explosion, I strongly advise you to restart this computer ***\033[m\n\n");
+    sleep(5);
+
     CUTE_RUN_TEST(lkm_ins_rm_tests);
     CUTE_RUN_TEST(dev_ctls_tests);
     CUTE_RUN_TEST(usage_lines_tests);

@@ -39,9 +39,16 @@ Now, to build this ``device`` you should jump to its ``src`` sub-directory and:
 tux@sché:~/Bletchley/dev-enigma/src# hefesto
 ```
 
+I think that use Humans as space monkeys to test any kind of code is bad, harmful and shameful.
+Due to it, some tests are executed over the generated module in some point during the build
+process, then **I strongly advise you to avoid building this software on Server machines** ;)
+Vandals!
+
 After the build process you will get the module ``enigma.ko``. Now you should use
 ``insmod``/``rmmod`` in order to get some fun with. When inserted, this module automatically
 creates a char device named as ``/dev/enigma`` onto your box.
+
+**Tip**:
 
 ## How to use my /dev/enigma?
 
@@ -219,6 +226,14 @@ Once the settings accepted, anytime you can revert the device to its initial sta
 
 ```c
 ioctl(dev, ENIGMA_RESET);
+```
+
+You can also set up a default setting for any file descriptor opened:
+
+```
+libeel_enigma_ctx enigma_default_conf;
+(...)
+ioctl(dev, ENIGMA_SET_DEFAULT_SETTING, &enigma_default_conf);
 ```
 
 Of course that this sample is pretty dull because it is kind of statical. You should to implement an application

@@ -12,6 +12,8 @@
 
 static struct dev_enigma_ctx g_dev_ctx = { 0 };
 
+static void copy_default_enigma_setting(libeel_enigma_ctx *enigma);
+
 struct dev_enigma_ctx *dev_ctx(void) {
     return &g_dev_ctx;
 }
@@ -45,6 +47,10 @@ int new_uline(void) {
             g_dev_ctx.ulines[u].enigma = libeel_new_enigma_ctx();
             if (g_dev_ctx.ulines[u].enigma != NULL) {
                 uline = u;
+                if (g_dev_ctx.default_setting != NULL) {
+                    copy_default_enigma_setting(g_dev_ctx.ulines[u].enigma);
+                    g_dev_ctx.ulines[u].has_init = libeel_init_machine(g_dev_ctx.ulines[u].enigma);
+                }
             }
         }
         unlock_uline(u);
@@ -101,4 +107,46 @@ void deinit_ulines(void) {
         release_uline(u);
         mutex_destroy(&g_dev_ctx.ulines[u].lock);
     }
+}
+
+static void copy_default_enigma_setting(libeel_enigma_ctx *enigma) {
+    if (enigma == NULL) {
+        return;
+    }
+    if (mutex_trylock(&g_dev_ctx.lock)) {
+        memcpy(enigma, g_dev_ctx.default_setting, sizeof(libeel_enigma_ctx));
+        mutex_unlock(&g_dev_ctx.lock);
+    }
+}
+
+int set_default_enigma_setting(const libeel_enigma_ctx *enigma) {
+    int result = 0;
+
+    if (!mutex_trylock(&g_dev_ctx.lock)) {
+        return 0;
+    }
+
+    if (g_dev_ctx.default_setting != NULL) {
+        libeel_del_enigma_ctx(g_dev_ctx.default_setting);
+    }
+
+    g_dev_ctx.default_setting = libeel_new_enigma_ctx();
+
+    if (g_dev_ctx.default_setting == NULL) {
+        goto ___set_epilogue;
+    }
+
+    memcpy(g_dev_ctx.default_setting, enigma, sizeof(libeel_enigma_ctx));
+
+    result = libeel_init_machine(g_dev_ctx.default_setting);
+
+___set_epilogue:
+    if (result == 0 && g_dev_ctx.default_setting != NULL) {
+        libeel_del_enigma_ctx(g_dev_ctx.default_setting);
+        g_dev_ctx.default_setting = NULL;
+    }
+
+    mutex_unlock(&g_dev_ctx.lock);
+
+    return result;
 }

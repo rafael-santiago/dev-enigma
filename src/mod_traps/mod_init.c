@@ -15,6 +15,7 @@
 #include <dev_write.h>
 #include <dev_ioctl.h>
 #include <linux/device.h>
+#include <linux/mutex.h>
 
 static struct file_operations fops = {
     .owner = THIS_MODULE,
@@ -55,6 +56,9 @@ int __init enigma_init(void) {
         printk(KERN_INFO "dev/enigma: \tdevice creation fail.\n");
         return PTR_ERR(dev_ctx()->device);
     }
+
+    dev_ctx()->default_setting = NULL;
+    mutex_init(&dev_ctx()->lock);
 
     init_ulines();
 

@@ -55,7 +55,8 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
             break;
 
         case ENIGMA_SET:
-            if (!access_ok(VERIFY_READ, (void __user *)usr_param, _IOC_SIZE(cmd))) {
+            if ((void *)usr_param == NULL ||
+                !access_ok(VERIFY_READ, (void __user *)usr_param, _IOC_SIZE(cmd))) {
                 return -EFAULT;
             }
 
@@ -100,12 +101,17 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
             unlock_uline(uline);
             break;
 
-        case ENIGMA_USAGE_LINE_RESET:
-            //  TODO.
-            break;
+        case ENIGMA_SET_DEFAULT_SETTING:
+            if ((void *)usr_param == NULL ||
+                !access_ok(VERIFY_READ, (void __user *)usr_param, _IOC_SIZE(cmd))) {
+                return -EFAULT;
+            }
 
-        case ENIGMA_USAGE_LINE_SET:
-            //  TODO.
+            user_enigma = *(libeel_enigma_ctx *)usr_param;
+
+            if (!set_default_enigma_setting(&user_enigma)) {
+                result = -EINVAL;
+            }
             break;
 
         default:
