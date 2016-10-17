@@ -66,6 +66,8 @@ void release_uline(const int uline) {
     }
 
     unlock_uline(uline);
+
+    mutex_destroy(&g_dev_ctx.ulines[uline].lock);
 }
 
 struct dev_enigma_usage_line_ctx *dev_uline_ctx(const int uline) {
