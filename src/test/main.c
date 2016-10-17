@@ -251,7 +251,7 @@ CUTE_TEST_CASE_SUITE_END
 CUTE_TEST_CASE(device_tests)
     printf("\n\n\033[1m\033[31m"
            "*** Hello Human, step back, I will test the \"enigma.ko\" within 5 secs.\n"
-           "    In case of some explosion, I strongly advise you to restart this computer ***\033[m\n\n");
+           "    In case of some explosion, I strongly advise you to restart this computer. ***\033[m\n\n");
     sleep(5);
 
     CUTE_RUN_TEST(lkm_ins_rm_tests);
