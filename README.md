@@ -48,8 +48,6 @@ After the build process you will get the module ``enigma.ko``. Now you should us
 ``insmod``/``rmmod`` in order to get some fun with. When inserted, this module automatically
 creates a char device named as ``/dev/enigma`` onto your box.
 
-**Tip**:
-
 ## How to use my /dev/enigma?
 
 The usage of this device is pretty straightforward. You should:
@@ -248,7 +246,7 @@ simultaneously hung in this device. On normal conditions, is expected that none 
 
 ### Best practices
 
-This is just a ``toy device`` so I have used a bunch of things that is not so advised for being used into real-world
+This is just a ``toy device``, so I have used a bunch of things that is not so advised for being used into real-world
 devices. Like ``kmalloc``. Among other issues, it imposes a limit of ``128kb`` (more or less) to the passed data
 buffers. Do not try to pass huge buffers to your ``Enigma device`` do not be so stupid. Still, do not write for a
 long time without performing any read. These things will not put fire on your ``kernel`` but will cause malfunction in
