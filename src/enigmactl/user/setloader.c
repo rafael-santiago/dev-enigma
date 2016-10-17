@@ -109,7 +109,7 @@ static int is_valid_plugboard(const char *data) {
     dp = data;
     dp_end = dp + strlen(dp);
 
-    while (dp != dp_end && swaps_nr < 6) {
+    while (dp != dp_end && swaps_nr < 7) {
         if (!vprogram[state](*dp)) {
             printf("ERROR: Invalid plugboard setting.\n");
             return 0;
@@ -259,7 +259,8 @@ static void ld_plugboard(libeel_enigma_ctx *enigma, const char *data) {
                 break;
         }
 
-        dp += 3;
+        dp += 4;
+        swap++;
     }
 }
 
