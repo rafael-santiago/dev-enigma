@@ -203,8 +203,8 @@ under ``~/src/enigma.c``. To compile it you should proceed as follows:
 tux@sché:~/src# gcc enigma.c -oenigma -Idev-enigma/src/enigmactl -Idev-enigma/src/eel
 ```
 
-If you have installed it using the build scripts you can indicate only one include directory which would be
-``/usr/local/share/dev-enigma/include``.
+If you have installed this device driver using the build scripts you can indicate only one include directory
+which would be ``/usr/local/share/dev-enigma/include``.
 
 When running this sample you should get something like:
 
