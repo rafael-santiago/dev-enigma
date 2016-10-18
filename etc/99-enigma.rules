@@ -1,1 +1,1 @@
-KERNEL=="enigma", SUBSYSTEM="ems", MODE="0666"
+KERNEL=="enigma", NAME="enigma", MODE="0666"
