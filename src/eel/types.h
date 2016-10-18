@@ -27,7 +27,8 @@ struct libeel_plug_setting_ctx {
 };
 
 typedef struct _libeel_plugboard_ctx {
-    struct libeel_plug_setting_ctx plug1, plug2, plug3, plug4, plug5, plug6;
+    struct libeel_plug_setting_ctx plug1, plug2, plug3, plug4, plug5,
+                                   plug6, plug7, plug8, plug9, plug10;
 }libeel_plugboard_ctx;
 
 typedef char libeel_rotor_wiring_t[26];

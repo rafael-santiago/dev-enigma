@@ -267,6 +267,26 @@ static void libeel_set_plugboard(libeel_enigma_ctx *enigma) {
         libeel_keyboard(enigma)[toupper(libeel_plugboard(enigma, 6).l) - 'A'] = toupper(libeel_plugboard(enigma, 6).r);
         libeel_keyboard(enigma)[toupper(libeel_plugboard(enigma, 6).r) - 'A'] = toupper(libeel_plugboard(enigma, 6).l);
     }
+
+    if (libeel_plugboard(enigma, 7).l != 0) {
+        libeel_keyboard(enigma)[toupper(libeel_plugboard(enigma, 7).l) - 'A'] = toupper(libeel_plugboard(enigma, 7).r);
+        libeel_keyboard(enigma)[toupper(libeel_plugboard(enigma, 7).r) - 'A'] = toupper(libeel_plugboard(enigma, 7).l);
+    }
+
+    if (libeel_plugboard(enigma, 8).l != 0) {
+        libeel_keyboard(enigma)[toupper(libeel_plugboard(enigma, 8).l) - 'A'] = toupper(libeel_plugboard(enigma, 8).r);
+        libeel_keyboard(enigma)[toupper(libeel_plugboard(enigma, 8).r) - 'A'] = toupper(libeel_plugboard(enigma, 8).l);
+    }
+
+    if (libeel_plugboard(enigma, 9).l != 0) {
+        libeel_keyboard(enigma)[toupper(libeel_plugboard(enigma, 9).l) - 'A'] = toupper(libeel_plugboard(enigma, 9).r);
+        libeel_keyboard(enigma)[toupper(libeel_plugboard(enigma, 9).r) - 'A'] = toupper(libeel_plugboard(enigma, 9).l);
+    }
+
+    if (libeel_plugboard(enigma, 10).l != 0) {
+        libeel_keyboard(enigma)[toupper(libeel_plugboard(enigma, 10).l) - 'A'] = toupper(libeel_plugboard(enigma, 10).r);
+        libeel_keyboard(enigma)[toupper(libeel_plugboard(enigma, 10).r) - 'A'] = toupper(libeel_plugboard(enigma, 10).l);
+    }
 }
 
 static void libeel_set_reflector(libeel_rotor_wiring_t reflector, const libeel_reflector_t r) {
@@ -478,66 +498,120 @@ static int libeel_setting_sanity_check(const libeel_enigma_ctx *enigma) {
         return 0;
     }
 
-    if ((libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma, 2).l) ||
-        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma, 2).r) ||
-        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma, 3).l) ||
-        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma, 3).r) ||
-        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma, 4).l) ||
-        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma, 4).r) ||
-        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma, 5).l) ||
-        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma, 5).r) ||
-        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma, 6).l) ||
-        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma, 6).r) ||
-        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma, 2).l) ||
-        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma, 2).r) ||
-        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma, 3).l) ||
-        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma, 3).r) ||
-        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma, 4).l) ||
-        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma, 4).r) ||
-        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma, 5).l) ||
-        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma, 5).r) ||
-        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma, 6).l) ||
-        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma, 6).r) ||
-        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma, 3).l) ||
-        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma, 3).r) ||
-        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma, 4).l) ||
-        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma, 4).r) ||
-        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma, 5).l) ||
-        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma, 5).r) ||
-        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma, 6).l) ||
-        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma, 6).r) ||
-        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma, 3).l) ||
-        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma, 3).r) ||
-        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma, 4).l) ||
-        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma, 4).r) ||
-        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma, 5).l) ||
-        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma, 5).r) ||
-        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma, 6).l) ||
-        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma, 6).r) ||
-        (libeel_plugboard(enigma, 3).l > 0 && libeel_plugboard(enigma, 3).l == libeel_plugboard(enigma, 4).l) ||
-        (libeel_plugboard(enigma, 3).l > 0 && libeel_plugboard(enigma, 3).l == libeel_plugboard(enigma, 4).r) ||
-        (libeel_plugboard(enigma, 3).l > 0 && libeel_plugboard(enigma, 3).l == libeel_plugboard(enigma, 5).l) ||
-        (libeel_plugboard(enigma, 3).l > 0 && libeel_plugboard(enigma, 3).l == libeel_plugboard(enigma, 5).r) ||
-        (libeel_plugboard(enigma, 3).l > 0 && libeel_plugboard(enigma, 3).l == libeel_plugboard(enigma, 6).l) ||
-        (libeel_plugboard(enigma, 3).l > 0 && libeel_plugboard(enigma, 3).l == libeel_plugboard(enigma, 6).r) ||
-        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma, 4).l) ||
-        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma, 4).r) ||
-        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma, 5).l) ||
-        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma, 5).r) ||
-        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma, 6).l) ||
-        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma, 6).r) ||
-        (libeel_plugboard(enigma, 4).l > 0 && libeel_plugboard(enigma, 4).l == libeel_plugboard(enigma, 5).l) ||
-        (libeel_plugboard(enigma, 4).l > 0 && libeel_plugboard(enigma, 4).l == libeel_plugboard(enigma, 5).r) ||
-        (libeel_plugboard(enigma, 4).l > 0 && libeel_plugboard(enigma, 4).l == libeel_plugboard(enigma, 6).l) ||
-        (libeel_plugboard(enigma, 4).l > 0 && libeel_plugboard(enigma, 4).l == libeel_plugboard(enigma, 6).r) ||
-        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma, 5).l) ||
-        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma, 5).r) ||
-        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma, 6).l) ||
-        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma, 6).r) ||
-        (libeel_plugboard(enigma, 5).l > 0 && libeel_plugboard(enigma, 5).l == libeel_plugboard(enigma, 6).l) ||
-        (libeel_plugboard(enigma, 5).l > 0 && libeel_plugboard(enigma, 5).l == libeel_plugboard(enigma, 6).r) ||
-        (libeel_plugboard(enigma, 5).r > 0 && libeel_plugboard(enigma, 5).r == libeel_plugboard(enigma, 6).l) ||
-        (libeel_plugboard(enigma, 5).r > 0 && libeel_plugboard(enigma, 5).r == libeel_plugboard(enigma, 6).r)) {
+    if ((libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma,  2).l) ||
+        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma,  2).r) ||
+        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma,  3).l) ||
+        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma,  3).r) ||
+        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma,  4).l) ||
+        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma,  4).r) ||
+        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma,  5).l) ||
+        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma,  5).r) ||
+        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma,  6).l) ||
+        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).l == libeel_plugboard(enigma,  6).r) ||
+        (libeel_plugboard(enigma, 1).l > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  2).l) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  2).r) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  3).l) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  3).r) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  4).l) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  4).r) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  5).l) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  5).r) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  6).l) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  6).r) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  7).l) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  7).r) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  8).l) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  8).r) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  9).l) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma,  9).r) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma, 10).l) ||
+        (libeel_plugboard(enigma, 1).r > 0 && libeel_plugboard(enigma, 1).r == libeel_plugboard(enigma, 10).r) ||
+        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma,  3).l) ||
+        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma,  3).r) ||
+        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma,  4).l) ||
+        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma,  4).r) ||
+        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma,  5).l) ||
+        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma,  5).r) ||
+        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma,  6).l) ||
+        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).l == libeel_plugboard(enigma,  6).r) ||
+        (libeel_plugboard(enigma, 2).l > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  3).l) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  3).r) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  4).l) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  4).r) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  5).l) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  5).r) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  6).l) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  6).r) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  7).l) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  7).r) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  8).l) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  8).r) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  9).l) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma,  9).r) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma, 10).l) ||
+        (libeel_plugboard(enigma, 2).r > 0 && libeel_plugboard(enigma, 2).r == libeel_plugboard(enigma, 10).r) ||
+        (libeel_plugboard(enigma, 3).l > 0 && libeel_plugboard(enigma, 3).l == libeel_plugboard(enigma,  4).l) ||
+        (libeel_plugboard(enigma, 3).l > 0 && libeel_plugboard(enigma, 3).l == libeel_plugboard(enigma,  4).r) ||
+        (libeel_plugboard(enigma, 3).l > 0 && libeel_plugboard(enigma, 3).l == libeel_plugboard(enigma,  5).l) ||
+        (libeel_plugboard(enigma, 3).l > 0 && libeel_plugboard(enigma, 3).l == libeel_plugboard(enigma,  5).r) ||
+        (libeel_plugboard(enigma, 3).l > 0 && libeel_plugboard(enigma, 3).l == libeel_plugboard(enigma,  6).l) ||
+        (libeel_plugboard(enigma, 3).l > 0 && libeel_plugboard(enigma, 3).l == libeel_plugboard(enigma,  6).r) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma,  4).l) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma,  4).r) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma,  5).l) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma,  5).r) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma,  6).l) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma,  6).r) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma,  7).l) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma,  7).r) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma,  8).l) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma,  8).r) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma,  9).l) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma,  9).r) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma, 10).l) ||
+        (libeel_plugboard(enigma, 3).r > 0 && libeel_plugboard(enigma, 3).r == libeel_plugboard(enigma, 10).r) ||
+        (libeel_plugboard(enigma, 4).l > 0 && libeel_plugboard(enigma, 4).l == libeel_plugboard(enigma,  5).l) ||
+        (libeel_plugboard(enigma, 4).l > 0 && libeel_plugboard(enigma, 4).l == libeel_plugboard(enigma,  5).r) ||
+        (libeel_plugboard(enigma, 4).l > 0 && libeel_plugboard(enigma, 4).l == libeel_plugboard(enigma,  6).l) ||
+        (libeel_plugboard(enigma, 4).l > 0 && libeel_plugboard(enigma, 4).l == libeel_plugboard(enigma,  6).r) ||
+        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma,  5).l) ||
+        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma,  5).r) ||
+        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma,  6).l) ||
+        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma,  6).r) ||
+        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma,  7).l) ||
+        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma,  7).r) ||
+        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma,  8).l) ||
+        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma,  8).r) ||
+        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma,  9).l) ||
+        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma,  9).r) ||
+        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma, 10).l) ||
+        (libeel_plugboard(enigma, 4).r > 0 && libeel_plugboard(enigma, 4).r == libeel_plugboard(enigma, 10).r) ||
+        (libeel_plugboard(enigma, 5).l > 0 && libeel_plugboard(enigma, 5).l == libeel_plugboard(enigma,  6).l) ||
+        (libeel_plugboard(enigma, 5).l > 0 && libeel_plugboard(enigma, 5).l == libeel_plugboard(enigma,  6).r) ||
+        (libeel_plugboard(enigma, 5).r > 0 && libeel_plugboard(enigma, 5).r == libeel_plugboard(enigma,  7).l) ||
+        (libeel_plugboard(enigma, 5).r > 0 && libeel_plugboard(enigma, 5).r == libeel_plugboard(enigma,  7).r) ||
+        (libeel_plugboard(enigma, 5).r > 0 && libeel_plugboard(enigma, 5).r == libeel_plugboard(enigma,  8).l) ||
+        (libeel_plugboard(enigma, 5).r > 0 && libeel_plugboard(enigma, 5).r == libeel_plugboard(enigma,  8).r) ||
+        (libeel_plugboard(enigma, 5).r > 0 && libeel_plugboard(enigma, 5).r == libeel_plugboard(enigma,  9).l) ||
+        (libeel_plugboard(enigma, 5).r > 0 && libeel_plugboard(enigma, 5).r == libeel_plugboard(enigma,  9).r) ||
+        (libeel_plugboard(enigma, 5).r > 0 && libeel_plugboard(enigma, 5).r == libeel_plugboard(enigma, 10).l) ||
+        (libeel_plugboard(enigma, 5).r > 0 && libeel_plugboard(enigma, 5).r == libeel_plugboard(enigma, 10).r) ||
+        (libeel_plugboard(enigma, 6).r > 0 && libeel_plugboard(enigma, 6).r == libeel_plugboard(enigma,  7).l) ||
+        (libeel_plugboard(enigma, 6).r > 0 && libeel_plugboard(enigma, 6).r == libeel_plugboard(enigma,  7).r) ||
+        (libeel_plugboard(enigma, 6).r > 0 && libeel_plugboard(enigma, 6).r == libeel_plugboard(enigma,  8).l) ||
+        (libeel_plugboard(enigma, 6).r > 0 && libeel_plugboard(enigma, 6).r == libeel_plugboard(enigma,  8).r) ||
+        (libeel_plugboard(enigma, 6).r > 0 && libeel_plugboard(enigma, 6).r == libeel_plugboard(enigma,  9).l) ||
+        (libeel_plugboard(enigma, 6).r > 0 && libeel_plugboard(enigma, 6).r == libeel_plugboard(enigma,  9).r) ||
+        (libeel_plugboard(enigma, 6).r > 0 && libeel_plugboard(enigma, 6).r == libeel_plugboard(enigma, 10).l) ||
+        (libeel_plugboard(enigma, 6).r > 0 && libeel_plugboard(enigma, 6).r == libeel_plugboard(enigma, 10).r) ||
+        (libeel_plugboard(enigma, 7).r > 0 && libeel_plugboard(enigma, 7).r == libeel_plugboard(enigma,  8).l) ||
+        (libeel_plugboard(enigma, 7).r > 0 && libeel_plugboard(enigma, 7).r == libeel_plugboard(enigma,  8).r) ||
+        (libeel_plugboard(enigma, 7).r > 0 && libeel_plugboard(enigma, 7).r == libeel_plugboard(enigma,  9).l) ||
+        (libeel_plugboard(enigma, 7).r > 0 && libeel_plugboard(enigma, 7).r == libeel_plugboard(enigma,  9).r) ||
+        (libeel_plugboard(enigma, 7).r > 0 && libeel_plugboard(enigma, 7).r == libeel_plugboard(enigma, 10).l) ||
+        (libeel_plugboard(enigma, 7).r > 0 && libeel_plugboard(enigma, 7).r == libeel_plugboard(enigma, 10).r) ||
+        (libeel_plugboard(enigma, 9).r > 0 && libeel_plugboard(enigma, 9).r == libeel_plugboard(enigma, 10).l) ||
+        (libeel_plugboard(enigma, 9).r > 0 && libeel_plugboard(enigma, 9).r == libeel_plugboard(enigma, 10).r)) {
         return 0;
     }
 

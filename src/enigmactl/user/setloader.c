@@ -126,7 +126,7 @@ static int is_valid_plugboard(const char *data) {
     dp = data;
     dp_end = dp + strlen(dp);
 
-    while (dp != dp_end && swaps_nr < 7) {
+    while (dp != dp_end && swaps_nr < 11) {
         if (!vprogram[state](*dp)) {
             printf("ERROR: Invalid plugboard setting.\n");
             return 0;
@@ -138,7 +138,7 @@ static int is_valid_plugboard(const char *data) {
         dp++;
     }
 
-    if (swaps_nr > 6) {
+    if (swaps_nr > 10) {
         printf("ERROR: Not enough space to make the requested swaps in the plugboard.\n");
         return 0;
     }
@@ -273,6 +273,26 @@ static void ld_plugboard(libeel_enigma_ctx *enigma, const char *data) {
             case 5:
                 libeel_plugboard(enigma, 6).l = *dp;
                 libeel_plugboard(enigma, 6).r = *(dp + 2);
+                break;
+
+            case 6:
+                libeel_plugboard(enigma, 7).l = *dp;
+                libeel_plugboard(enigma, 7).r = *(dp + 2);
+                break;
+
+            case 7:
+                libeel_plugboard(enigma, 8).l = *dp;
+                libeel_plugboard(enigma, 8).r = *(dp + 2);
+                break;
+
+            case 8:
+                libeel_plugboard(enigma, 9).l = *dp;
+                libeel_plugboard(enigma, 9).r = *(dp + 2);
+                break;
+
+            case 10:
+                libeel_plugboard(enigma, 10).l = *dp;
+                libeel_plugboard(enigma, 10).r = *(dp + 2);
                 break;
         }
 

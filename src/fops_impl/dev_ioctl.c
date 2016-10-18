@@ -66,28 +66,7 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
 
             user_enigma = *((libeel_enigma_ctx *)usr_param);
 
-            ulp->enigma->left_rotor = user_enigma.left_rotor;
-            ulp->enigma->middle_rotor = user_enigma.middle_rotor;
-            ulp->enigma->right_rotor = user_enigma.right_rotor;
-
-            libeel_rotor_at(ulp->enigma, l) = libeel_rotor_at(&user_enigma, l);
-            libeel_rotor_at(ulp->enigma, m) = libeel_rotor_at(&user_enigma, m);
-            libeel_rotor_at(ulp->enigma, r) = libeel_rotor_at(&user_enigma, r);
-
-            ulp->enigma->reflector = user_enigma.reflector;
-
-            libeel_plugboard(ulp->enigma, 1).l = libeel_plugboard(&user_enigma, 1).l;
-            libeel_plugboard(ulp->enigma, 1).r = libeel_plugboard(&user_enigma, 1).r;
-            libeel_plugboard(ulp->enigma, 2).l = libeel_plugboard(&user_enigma, 2).l;
-            libeel_plugboard(ulp->enigma, 2).r = libeel_plugboard(&user_enigma, 2).r;
-            libeel_plugboard(ulp->enigma, 3).l = libeel_plugboard(&user_enigma, 3).l;
-            libeel_plugboard(ulp->enigma, 3).r = libeel_plugboard(&user_enigma, 3).r;
-            libeel_plugboard(ulp->enigma, 4).l = libeel_plugboard(&user_enigma, 4).l;
-            libeel_plugboard(ulp->enigma, 4).r = libeel_plugboard(&user_enigma, 4).r;
-            libeel_plugboard(ulp->enigma, 5).l = libeel_plugboard(&user_enigma, 5).l;
-            libeel_plugboard(ulp->enigma, 5).r = libeel_plugboard(&user_enigma, 5).r;
-            libeel_plugboard(ulp->enigma, 6).l = libeel_plugboard(&user_enigma, 6).l;
-            libeel_plugboard(ulp->enigma, 6).r = libeel_plugboard(&user_enigma, 6).r;
+            memcpy(ulp->enigma, &user_enigma, sizeof(libeel_enigma_ctx));
 
             memset(&user_enigma, 0, sizeof(user_enigma));
 
