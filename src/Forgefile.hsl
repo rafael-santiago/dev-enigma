@@ -9,6 +9,7 @@
 include ~/toolsets/linux/linux-module.hsl
 include run_test.hsl
 include installer.hsl
+include mkclean.hsl
 
 var includes type list;
 var cflags type list;
@@ -18,6 +19,8 @@ var ldflags type list;
 project dev-enigma : toolset "linux-module" : "mod.c", $includes, $cflags, $libraries, $ldflags, "enigma";
 
 dev-enigma.prologue() {
+    cleaner();
+
     device_installer();
 
     # INFO(Santiago): The KBuild runs relative to the kernel source tree, for this reason is important to
@@ -48,5 +51,17 @@ local function forge_user_enigmactl() : result type none {
         if (hefesto.sys.last_forge_result() != 0) {
             hefesto.project.abort(hefesto.sys.last_forge_result());
         }
+    }
+}
+
+local function cleaner() : result type none {
+    var option type list;
+
+    $option = hefesto.sys.get_option("clean");
+
+    if ($option.count() > 0) {
+        mkclean();
+        hefesto.sys.echo("*** Clean.\n");
+        hefesto.project.abort(0);
     }
 }

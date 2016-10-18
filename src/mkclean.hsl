@@ -1,0 +1,44 @@
+#
+#                              Copyright (C) 2016 by Rafael Santiago
+#
+# This is free software. You can redistribute it and/or modify under
+# the terms of the GNU General Public License version 2.
+#
+#
+
+include ~/fsutil.hsl
+
+function mkclean() : result type none {
+    hefesto.sys.echo("*** Making it clean... wait...\n");
+
+    var dirs type list;
+    $dirs.add_item(hefesto.sys.pwd());
+
+    mkclean_recur($dirs);
+
+    hefesto.sys.cd($dirs.item(0));
+
+    hefesto.sys.echo("*** Done.\n");
+}
+
+local function mkclean_recur(dirs type list) : result type none {
+    var d type int;
+    $d = 0;
+
+    while ($d < $dirs.count()) {
+        if (hefesto.sys.cd($dirs.item($d))) {
+            hefesto.sys.echo(" Now on " + $dirs.item($d) + "...\n");
+            var objs type list;
+            $objs.ls(".*\\.(o|ko)$");
+
+            while ($objs.count() > 0) {
+                hefesto.sys.echo("  rm " + $objs.item(0) + "...\n");
+                hefesto.sys.rm($objs.item(0));
+                $objs.del_index(0);
+            }
+
+            mkclean_recur(lsdir());
+        }
+        $d = $d + 1;
+    }
+}
