@@ -45,8 +45,22 @@ process, then **I strongly advise you to avoid building this software on Server 
 Vandals!
 
 After the build process you will get the module ``enigma.ko``. Now you should use
-``insmod``/``rmmod`` in order to get some fun with. When inserted, this module automatically
+``insmod``/``rmmod`` in order to get some fun with it. When inserted, this module automatically
 creates a char device named as ``/dev/enigma`` onto your box.
+
+## How to install it?
+
+In order to install it you need to be under the ``src`` sub-directory and so:
+
+```
+tux@sché:~/Bletchley/dev-enigma/src# hefesto --install
+```
+
+For uninstalling issues, it is similar, look:
+
+```
+tux@sché:~/Bletchley/dev-enigma/src# hefesto --uninstall
+```
 
 ## How to use my /dev/enigma?
 
@@ -186,8 +200,11 @@ Now, supposing that you have cloned the ``/dev/enigma`` to ``~/src/dev-enigma`` 
 under ``~/src/enigma.c``. To compile it you should proceed as follows:
 
 ```
-tux@sché:~/src# gcc enigma.c -oenigma -Idev-enigma/src/fops_impl -Idev-enigma/src/eel
+tux@sché:~/src# gcc enigma.c -oenigma -Idev-enigma/src/enigmactl -Idev-enigma/src/eel
 ```
+
+If you have installed it using the build scripts you can indicate only one include directory which would be
+``/usr/local/share/dev-enigma/include``.
 
 When running this sample you should get something like:
 
@@ -228,7 +245,7 @@ ioctl(dev, ENIGMA_RESET);
 
 You can also set up a default setting for any file descriptor opened:
 
-```
+```c
 libeel_enigma_ctx enigma_default_conf;
 (...)
 ioctl(dev, ENIGMA_SET_DEFAULT_SETTING, &enigma_default_conf);
@@ -251,7 +268,3 @@ devices. Like ``kmalloc``. Among other issues, it imposes a limit of ``128kb`` (
 buffers. Do not try to pass huge buffers to your ``Enigma device`` do not be so stupid. Still, do not write for a
 long time without performing any read. These things will not put fire on your ``kernel`` but will cause malfunction in
 your ``char device``.
-
-## How to install it?
-
-(not yet, coming soon!)

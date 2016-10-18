@@ -1,0 +1,81 @@
+.TH enigmactl 1 "October 17, 2016" "version 0.0.1" "USER COMMANDS"
+.SH NAME
+enigmactl \- the /dev/enigma controller
+.SH SYNOPSIS
+.B enigmactl [\fIOPTIONS\fR]
+.SH DESCRIPTION
+\fIenigmactl\fR is used to set up your \fI/dev/enigma\fR.
+
+.SH OPTIONS
+.TP
+\-\-set
+Indicates the set operation.
+
+.TP
+\-\-l-rotor=\fI<i | ii | iii | iv | v | vi | vii | viii>\fR
+Specifies the left rotor.
+
+.TP
+\-\-m-rotor=\fI<i | ii | iii | iv | v | vi | vii | viii>\fR
+Specifies the middle rotor.
+
+.TP
+\-\-r-rotor=\fI<i | ii | iii | iv | v | vi | vii | viii>\fR
+Specifies the right rotor.
+
+.TP
+\-\-l-rotor-at=\fI<A-Z>\fR
+Specifies the left rotor position.
+
+.TP
+\-\-m-rotor-at=\fI<A-Z>\fR
+Specifies the middle rotor position.
+
+.TP
+\-\-r-rotor-at=\fI<A-Z>\fR
+Specifies the right rotor position.
+
+.TP
+\-\-l-ring=\fI<1-26>\fR
+Specifies the left ring position.
+
+.TP
+\-\-m-ring=\fI<1-26>\fR
+Specifies the middle ring position.
+
+.TP
+\-\-r-ring=\fI<1-26>\fR
+Specifies the right ring position.
+
+.TP
+\-\-reflector=\fI<b | c>\fR
+Specifies the reflector.
+
+.TP
+\-\-plugboard=\fI<S1/S1',...,S6/S6'>\fR
+Specifies the plugboard swaps.
+
+.TP
+\-\-help
+Shows the general help.
+
+.TP
+\-\-version
+Show the software version.
+
+.PP
+.SH EXIT STATUS
+If the execution succeeds enigmactl returns zero, otherwise non zero value will be returned.
+
+.PP
+.SH
+SEE ALSO
+.TP
+\fI/usr/local/share/enigmactl/doc\fR (or equivalent in your system)
+.PP
+.SH
+HOMEPAGE
+.TP
+https://github.com/rafael-santiago/dev-enigma
+.SH AUTHOR
+Rafael Santiago <voidbrainvoid@gmail.com>

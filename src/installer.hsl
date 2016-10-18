@@ -1,0 +1,168 @@
+#
+#                              Copyright (C) 2016 by Rafael Santiago
+#
+# This is free software. You can redistribute it and/or modify under
+# the terms of the GNU General Public License version 2.
+#
+#
+
+include ~/fsutil.hsl
+
+function device_installer() : result type none {
+    var option type list;
+
+    $option = hefesto.sys.get_option("install");
+
+    if ($option.count() > 0) {
+        hefesto.project.abort(dev_install());
+    }
+
+    $option = hefesto.sys.get_option("uninstall");
+
+    if ($option.count() > 0) {
+        hefesto.project.abort(dev_uninstall());
+    }
+}
+
+local function dev_install() : result type int {
+    var possible_answers type list;
+
+    $possible_answers.add_item("y");
+    $possible_answers.add_item("Y");
+    $possible_answers.add_item("n");
+    $possible_answers.add_item("N");
+
+    var answer type string;
+
+    $answer = get_answer("Do you want to install /dev/enigma? [y/n] ", $possible_answers);
+
+    if ($answer == "n" || $answer == "N") {
+        hefesto.sys.echo("\nERROR: Aborted by the user.\n");
+        result 1;
+    }
+
+    hefesto.sys.echo("\n");
+
+    if (isfile("enigma.ko") == 0) {
+        var exit_code type int;
+        $exit_code = hefesto.sys.run("hefesto");
+
+        if ($exit_code != 0) {
+            hefesto.sys.echo("ERROR: Unable to install. Aborted.\n");
+            result 1;
+        }
+    }
+
+    var device_trinket_src type list;
+    var device_trinket_dst type list;
+
+    $device_trinket_src.add_item("enigmactl/enigmactl.h");
+    $device_trinket_src.add_item("enigmactl/user/eel/src/eel.h");
+    $device_trinket_src.add_item("enigmactl/user/eel/src/types.h");
+    $device_trinket_src.add_item("enigma.ko");
+    $device_trinket_src.add_item("enigmactl/user/bin/enigmactl");
+    $device_trinket_src.add_item("../etc/99-enigma.rules");
+    $device_trinket_src.add_item("../README.md");
+    $device_trinket_src.add_item("enigmactl/user/doc/man/enigmactl.1");
+
+    $device_trinket_dst.add_item("/usr/local/share/dev-enigma/include/enigmactl.h");
+    $device_trinket_dst.add_item("/usr/local/share/dev-enigma/include/eel.h");
+    $device_trinket_dst.add_item("/usr/local/share/dev-enigma/include/types.h");
+    $device_trinket_dst.add_item("/usr/local/share/dev-enigma/mod/enigma.ko");
+    $device_trinket_dst.add_item("/usr/local/bin/enigmactl");
+    $device_trinket_dst.add_item("/etc/udev/rules.d/99-enigma.rules");
+    $device_trinket_dst.add_item("/usr/local/share/dev-enigma/doc/README.md");
+    $device_trinket_dst.add_item("/usr/local/man/man1/enigmactl.1");
+
+    var t type int;
+
+    $t = 0;
+    while ($t < $device_trinket_src.count()) {
+        var dirpath type string;
+
+        $dirpath = $device_trinket_dst.item($t);
+        $dirpath = pathfromfilepath($dirpath);
+
+        mktree($dirpath);
+
+        if (hefesto.sys.cp($device_trinket_src.item($t), $device_trinket_dst.item($t)) != 1) {
+            hefesto.sys.echo("ERROR: Unable to copy to " + $device_trinket_dst.item($t) + ". Aborted.\n");
+            result 1;
+        }
+
+        $t = $t + 1;
+    }
+
+    hefesto.sys.echo("INFO: The device was successfully installed.\n");
+
+    result 0;
+}
+
+local function dev_uninstall() : result type int {
+    var possible_answers type list;
+
+    $possible_answers.add_item("y");
+    $possible_answers.add_item("Y");
+    $possible_answers.add_item("n");
+    $possible_answers.add_item("N");
+
+    var answer type string;
+
+    $answer = get_answer("Do you want to uninstall /dev/enigma? [y/n] ", $possible_answers);
+
+    if ($answer == "n" || $answer == "N") {
+        hefesto.sys.echo("\nERROR: Aborted by the user.\n");
+        result 1;
+    }
+
+    var to_burn type list;
+
+    $to_burn.add_item("/usr/local/share/dev-enigma/include/enigmactl.h");
+    $to_burn.add_item("/usr/local/share/dev-enigma/include/eel.h");
+    $to_burn.add_item("/usr/local/share/dev-enigma/include/types.h");
+    $to_burn.add_item("/usr/local/share/dev-enigma/include");
+    $to_burn.add_item("/usr/local/share/dev-enigma/mod/enigma.ko");
+    $to_burn.add_item("/usr/local/share/dev-enigma/mod");
+    $to_burn.add_item("/usr/local/share/dev-enigma/doc/README.md");
+    $to_burn.add_item("/usr/local/share/dev-enigma/doc");
+    $to_burn.add_item("/usr/local/share/dev-enigma/");
+    $to_burn.add_item("/usr/local/bin/enigmactl");
+    $to_burn.add_item("/etc/udev/rules.d/99-enigma.rules");
+    $to_burn.add_item("/usr/local/man/man1/enigmactl.1");
+
+    var b type int;
+
+    $b = 0;
+    while ($b < $to_burn.count()) {
+        var return type int;
+        var path type string;
+
+        $path = $to_burn.item($b);
+
+        if (isdir($path)) {
+            $return = (hefesto.sys.rmdir($path) == 0);
+        } else if (isfile($path)) {
+            $return = (hefesto.sys.rm($path) == 0);
+        }
+
+        if ($return == 0) {
+            hefesto.sys.echo("WARN: Unable to remove " + $path + ".\n");
+        }
+
+        $b = $b + 1;
+    }
+
+    result 0;
+}
+
+local function get_answer(question type string, possible_answers type list) : result type string {
+    var answer type string;
+
+    $answer = "";
+
+    while ($possible_answers.index_of($answer) == -1) {
+        $answer = hefesto.sys.prompt($question);
+    }
+
+    result $answer;
+}

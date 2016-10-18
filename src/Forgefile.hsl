@@ -8,6 +8,7 @@
 
 include ~/toolsets/linux/linux-module.hsl
 include run_test.hsl
+include installer.hsl
 
 var includes type list;
 var cflags type list;
@@ -17,6 +18,7 @@ var ldflags type list;
 project dev-enigma : toolset "linux-module" : "mod.c", $includes, $cflags, $libraries, $ldflags, "enigma";
 
 dev-enigma.prologue() {
+    device_installer();
 
     # INFO(Santiago): The KBuild runs relative to the kernel source tree, for this reason is important to
     #                 define the local include directories as full-paths.
