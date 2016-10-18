@@ -20,7 +20,7 @@ int dev_open(struct inode *ip, struct file *fp) {
         return -EBUSY;
     }
 
-    fp->private_data = kmalloc(sizeof(int), GFP_KERNEL);
+    fp->private_data = kmalloc(sizeof(int), GFP_ATOMIC);
 
     if (fp->private_data != NULL) {
         *((int *)fp->private_data) = uline;

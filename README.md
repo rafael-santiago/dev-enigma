@@ -194,7 +194,7 @@ So, you need two "alien" ``includes`` to compile this sample:
 
 The ``Libeel`` follows embedded into ``/dev/enigma`` source code and all stuff of it is located under ``src/eel``.
 
-The ``enigmactl.h`` gathers the ``i/o control commands`` definitions and it is located under ``src/fops_impl``.
+The ``enigmactl.h`` gathers the ``i/o control commands`` definitions and it is located under ``src/enigmactl``.
 
 Now, supposing that you have cloned the ``/dev/enigma`` to ``~/src/dev-enigma`` and saved the sample shown above
 under ``~/src/enigma.c``. To compile it you should proceed as follows:

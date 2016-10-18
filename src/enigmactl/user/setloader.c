@@ -12,7 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 
-// WARN(Santiago): This code module is rather boring, you should not spend your time reading this piece of shit.
+// WARN(Santiago): This code module is a terrible boredom, you should not spend your time reading this piece of shit.
 
 typedef int (*setting_verifier)(const char *data);
 

@@ -362,7 +362,7 @@ static void libeel_clear_enigma_ctx(libeel_enigma_ctx *enigma) {
 }
 
 libeel_enigma_ctx *libeel_new_enigma_ctx(void) {
-    libeel_enigma_ctx *enigma = (libeel_enigma_ctx *)kmalloc(sizeof(libeel_enigma_ctx), GFP_KERNEL);
+    libeel_enigma_ctx *enigma = (libeel_enigma_ctx *)kmalloc(sizeof(libeel_enigma_ctx), GFP_ATOMIC);
     libeel_clear_enigma_ctx(enigma);
     return enigma;
 }

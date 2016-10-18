@@ -8,7 +8,7 @@
 #include "ebuf.h"
 #include <linux/slab.h>
 
-#define new_ebuf_ctx(e) ( (e) = (ebuf_ctx *) kmalloc(sizeof(ebuf_ctx), GFP_KERNEL), (e)->c = 0, (e)->next = NULL )
+#define new_ebuf_ctx(e) ( (e) = (ebuf_ctx *) kmalloc(sizeof(ebuf_ctx), GFP_ATOMIC), (e)->c = 0, (e)->next = NULL )
 
 void del_ebuf_ctx(ebuf_ctx *ebuf) {
     ebuf_ctx *t, *p;
