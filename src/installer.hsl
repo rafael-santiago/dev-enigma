@@ -64,6 +64,7 @@ local function dev_install() : result type int {
     $device_trinket_src.add_item("../etc/99-enigma.rules");
     $device_trinket_src.add_item("../README.md");
     $device_trinket_src.add_item("enigmactl/user/doc/man/enigmactl.1");
+    $device_trinket_src.add_item("../etc/enigmactl.sh");
 
     $device_trinket_dst.add_item("/usr/local/share/dev-enigma/include/enigmactl.h");
     $device_trinket_dst.add_item("/usr/local/share/dev-enigma/include/eel.h");
@@ -73,6 +74,7 @@ local function dev_install() : result type int {
     $device_trinket_dst.add_item("/etc/udev/rules.d/99-enigma.rules");
     $device_trinket_dst.add_item("/usr/local/share/dev-enigma/doc/README.md");
     $device_trinket_dst.add_item("/usr/local/man/man1/enigmactl.1");
+    $device_trinket_dst.add_item("/usr/local/bin/enigmactl.sh");
 
     var t type int;
 
@@ -88,6 +90,13 @@ local function dev_install() : result type int {
         if (hefesto.sys.cp($device_trinket_src.item($t), $device_trinket_dst.item($t)) != 1) {
             hefesto.sys.echo("ERROR: Unable to copy to " + $device_trinket_dst.item($t) + ". Aborted.\n");
             result 1;
+        }
+
+        var filepath type string;
+        $filepath = $device_trinket_dst.item($t);
+
+        if ($filepath.match(".*\\.sh$") == 1) {
+            hefesto.sys.run("chmod +x " + $filepath);
         }
 
         $t = $t + 1;
@@ -127,6 +136,7 @@ local function dev_uninstall() : result type int {
     $to_burn.add_item("/usr/local/share/dev-enigma/doc");
     $to_burn.add_item("/usr/local/share/dev-enigma/");
     $to_burn.add_item("/usr/local/bin/enigmactl");
+    $to_burn.add_item("/usr/local/bin/enigmactl.sh");
     $to_burn.add_item("/etc/udev/rules.d/99-enigma.rules");
     $to_burn.add_item("/usr/local/man/man1/enigmactl.1");
 

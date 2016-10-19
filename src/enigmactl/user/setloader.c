@@ -97,6 +97,7 @@ static int is_valid_number(const char *data) {
         if (!isdigit(*dp)) {
             return 0;
         }
+        dp++;
     }
 
     return 1;

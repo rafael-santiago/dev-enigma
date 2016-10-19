@@ -259,12 +259,123 @@ now this kind of code is up to you.
 
 Usage lines is the way of dividing the ``Enigma device`` present in your system among several users. Several but not
 inifite, in fact, I have fixed the number of usage lines to ``10``. By default, it is possible to have ten users
-simultaneously hung in this device. On normal conditions, is expected that none of them step on the foot of other.
+simultaneously hung in this device. On normal conditions, is expected that none of them step on the foot of each other.
+
+For this reason it makes the usage of this device a little bit tough. Thus if you try something like:
+
+```
+tux@sché:~/src# echo "foobar" > /dev/enigma
+tux@sché:~/src# cat /dev/enigma
+```
+
+Nothing will occur due to two reasons:
+
+1. You can not configure the Enigma setting with native shell commands, so the ``echo`` command will open and immediately try to use a non configurated machine.
+2. Even if the write operation succeeds, the ``echo`` command will close its file descriptor. When closing it all buffers related with this usage line will be freed.
+
+There is a way to beat these complications. Just follow reading...
+
+### The enigmactl application
+
+This application is installed together with the device driver. Basically it is a nice application used to define
+a default configuration for any usage line acquired.
+
+The basic usage for it is as follows:
+
+```
+tux@sché:~/src# enigmactl --set --l-rotor=i --m-rotor=ii --r-rotor=v \
+> --l-rotor-at=Y --m-rotor-at=Y --r-rotor-at=Z \
+> --reflector=b \
+> --l-ring=2 --m-ring=3 --r-ring=9 \
+> --plugboard=R/U,S/H
+```
+
+The option:
+
+- ``--l-rotor`` defines the rotor used on the left (from ``i`` to ``viii``).
+- ``--m-rotor`` defines the rotor used at the middle (from ``i`` to ``viii``).
+- ``--r-rotor`` defines the rotor used on the right  (from ``i`` to ``viii``).
+- ``--l-rotor-at`` defines the initial left rotor position (from ``A`` to ``Z``).
+- ``--m-rotor-at`` defines the initial middle rotor position (from ``A`` to ``Z``).
+- ``--r-rotor-at`` defines the initial right rotor position (from ``A`` to ``Z``).
+- ``--reflector`` defines the chosen reflector (can be ``B`` or ``C``).
+- ``--l-ring`` defines the chosen left ring position (from ``1`` to ``26``). It is optional, the default is ``1``.
+- ``--m-ring`` defines the chosen middle ring position (from ``1`` to ``26``). It is optional, the default is ``1``.
+- ``--r-ring`` defines the chosen right ring position (from ``1`` to ``26``). It is optional, the default is ``1``.
+- ``--plugboard`` defines the swaps on the machine plugboard. (in the form of ``s1/s1',...,s10/s10'``). It is optional, the default is ``no swaps``.
+
+You can also use the shell script ``enigmactl.sh``. This script allows you to set up the default configuration on a more cooked way:
+
+![Sample](https://github.com/rafael-santiago/ansiterm-enigma/blob/master/etc/enigma-ctl-sample.gif)
+
+This shell script is installed with the device driver and it is based on ``bash``.
+
+### Using the device directly from shell
+
+As said in a previous [section](#what-are-usage-lines) to use ``/dev/enigma`` directly from shell is not so trivial. I
+will show you a simple ``shell script`` which uses the ``enigmactl.sh`` for setting issues and so uses the device driver
+to perform some encryption/decryption.
+
+I will present the code and after commenting what I judge relevant:
+
+```bash
+# File name: 'enigma.sh'
+
+#!/bin/bash
+
+if [ -f enigmactl.sh ] ; then
+    dialog --yesno "Do you want setup /dev/enigma?" 0 0
+
+    if [ $? -eq 0 ]; then
+        ./enigmactl.sh
+        if [ $? -ne 0 ]; then
+            exit $?
+        fi
+    fi
+fi
+
+exec 3<>/dev/enigma
+
+if [ $? -ne 0 ]; then
+    echo "error: when trying to open /dev/enigma."
+    exit $0
+fi
+
+text=$1
+
+if [ -z $text ]; then
+    text="$(dialog --stdout --inputbox "Type the text to be written to /dev/enigma" 0 0)"
+fi
+
+if [ -z $text ]; then
+    echo ""
+    echo "INFO: aborted by the user."
+    exit 1
+fi
+
+echo $text >&3
+
+echo ""
+cat <&3
+
+exec 3>&-
+```
+
+Well, the script uses file descriptors techniques because the usage line must be hold by the user until the read operation
+happen, otherwise the written data will be lost. The script expects to receive a text to be processed as an argument, if it
+is not supplied, a dialog asking for this data will be shown. Thus, to use it you should proceed as follows:
+
+```
+tux@sché:~/src# ./enigma.sh "once you are lost in twillight's blue \
+> you do not find the way, the way finds you."
+vcsi qpe qki yuqz ba uzwbpxuin'i ysom odv nj bzf toor zgi ffx, jra unh acjpn ptq.
+tux@shcé:~/src# _
+```
 
 ### Best practices
 
 This is just a ``toy device``, so I have used a bunch of things that is not so advised for being used into real-world
 devices. Like ``kmalloc``. Among other issues, it imposes a limit of ``128kb`` (more or less) to the passed data
-buffers. Do not try to pass huge buffers to your ``Enigma device`` do not be so stupid. Still, do not write for a
+buffers. Do not try to pass huge buffers to your ``Enigma device``. Still, do not write for a
 long time without performing any read. These things will not put fire on your ``kernel`` but will cause malfunction in
 your ``char device``.
