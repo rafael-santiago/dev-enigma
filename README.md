@@ -379,3 +379,5 @@ devices. Like ``kmalloc``. Among other issues, it imposes a limit of ``128kb`` (
 buffers. Do not try to pass huge buffers to your ``Enigma device``. Still, do not write for a
 long time without performing any read. These things will not put fire on your ``kernel`` but will cause malfunction in
 your ``char device``.
+
+That's it! Have fun!
