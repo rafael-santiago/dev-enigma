@@ -9,12 +9,14 @@
 #include <dev_ctx.h>
 #include <eel.h>
 #include <ebuf.h>
+#include <linux/slab.h>
 #include <linux/uaccess.h>
 
 ssize_t dev_write(struct file *fp, const char __user *buf, size_t count, loff_t *fpos) {
     struct dev_enigma_usage_line_ctx *ulp;
     int uline;
-    const char *bp, *bp_end;
+    char *temp_buf = NULL;
+    char *bp, *bp_end;
     ssize_t written_bytes = 0;
 
     uline = *(int *)fp->private_data;
@@ -33,11 +35,23 @@ ssize_t dev_write(struct file *fp, const char __user *buf, size_t count, loff_t 
         return -EFAULT;
     }
 
+    temp_buf = (char *) kmalloc(count, GFP_ATOMIC);
+
+    if (temp_buf == NULL) {
+        return -ENOMEM;
+    }
+
     if (!lock_uline(uline)) {
         return -EBUSY;
     }
 
-    bp = buf;
+    if (copy_from_user(temp_buf, buf, count) != 0) {
+        kfree(temp_buf);
+        unlock_uline(uline);
+        return -EFAULT;
+    }
+
+    bp = temp_buf;
     bp_end = bp + count;
 
     while (bp != bp_end) {
@@ -47,6 +61,8 @@ ssize_t dev_write(struct file *fp, const char __user *buf, size_t count, loff_t 
     }
 
     *fpos += written_bytes;
+
+    kfree(temp_buf);
 
     unlock_uline(uline);
 

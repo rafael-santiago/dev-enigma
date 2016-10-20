@@ -9,6 +9,7 @@
 #include <enigmactl.h>
 #include <dev_ctx.h>
 #include <eel.h>
+#include <linux/slab.h>
 #include <asm/uaccess.h>
 
 long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
@@ -64,7 +65,10 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
                 return -EBUSY;
             }
 
-            user_enigma = *((libeel_enigma_ctx *)usr_param);
+            if (copy_from_user(&user_enigma, (libeel_enigma_ctx *)usr_param, sizeof(libeel_enigma_ctx)) != 0) {
+                unlock_uline(uline);
+                return -EFAULT;
+            }
 
             memcpy(ulp->enigma, &user_enigma, sizeof(libeel_enigma_ctx));
 
@@ -86,7 +90,9 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
                 return -EFAULT;
             }
 
-            user_enigma = *(libeel_enigma_ctx *)usr_param;
+            if (copy_from_user(&user_enigma, (libeel_enigma_ctx *)usr_param, sizeof(libeel_enigma_ctx)) != 0) {
+                return -EFAULT;
+            }
 
             if (!set_default_enigma_setting(&user_enigma)) {
                 result = -EINVAL;
