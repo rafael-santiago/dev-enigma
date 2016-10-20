@@ -1,0 +1,71 @@
+include ~/toolsets/gcc/gcc-app.hsl
+
+var sources type list;
+var includes type list;
+var cflags type list;
+var libraries type list;
+var ldflags type list;
+
+project enigmactl-unit : toolset "gcc-c-app" : $sources, $includes, $cflags, $libraries, $ldflags, "enigmactl-unit";
+
+enigmactl-unit.prologue() {
+    $sources.ls(".*\\.c$");
+
+    $includes.add_item("../eel/src/test/cutest/src");
+    $includes.add_item("../eel/src");
+
+    $ldflags = get_enigmactl_objects();
+
+    $libraries.add_item("../eel/src/test/cutest/src/lib");
+    $ldflags.add_item("-lcutest");
+    if (hefesto.sys.os_name() == "linux") {
+        $ldflags.add_item("-ldl");
+        $ldflags.add_item("-lpthread");
+    }
+
+    $libraries.add_item("../eel/src/lib");
+    $ldflags.add_item("-leel");
+}
+
+enigmactl-unit.epilogue() {
+    if (hefesto.sys.last_forge_result() == 0) {
+        var exit_code type int;
+
+        $exit_code = runtests();
+
+        if ($exit_code != 0) {
+            hefesto.project.abort($exit_code);
+        }
+    }
+}
+
+local function runtests() : result type int {
+    result hefesto.sys.run(hefesto.sys.make_path("bin", "enigmactl-unit"));
+}
+
+local function get_enigmactl_objects() : result type list {
+    var objects type list;
+    var cwd type string;
+
+    $cwd = hefesto.sys.pwd();
+
+    if (hefesto.sys.cd("../o")) {
+        $objects.ls(".*\\.o$");
+
+        var o type int;
+        $o = 0;
+
+        while ($o < $objects.count()) {
+            var object type string;
+            $object = $objects.item($o);
+            if ($object.match(".*main\\.o$")) {
+                $objects.del_index($o);
+                break;
+            }
+
+            $o = $o + 1;
+        }
+    }
+
+    result $objects;
+}

@@ -7,6 +7,9 @@ Until now I have written it to run on ``2.6.x`` or higher kernel versions. Maybe
 little change on the ``dev_ioctl()`` prototype you can be able to build it on ``2.4.x``
 kernels but I am not so sure about.
 
+**Warning**: Do not use it to protect any sensible data. The ``Enigma`` was cracked during
+``WWII``. So, it is just for fun.
+
 ## How to clone it?
 
 The easiest way is:
