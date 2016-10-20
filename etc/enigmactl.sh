@@ -63,7 +63,7 @@ if [ -z $l_rotor_at ]; then
     abort
 fi
 
-reflector=$(dialog --stdout --backtitle "$backtitle" --radiolist "Select one reflector:" 0 0 0 B "" off C "Reflector C" on)
+reflector=$(dialog --stdout --backtitle "$backtitle" --radiolist "Select one reflector:" 0 0 0 B "" off C "" on)
 
 if [ -z $reflector ]; then
     abort
