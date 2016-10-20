@@ -306,7 +306,7 @@ The option:
 
 You can also use the shell script ``enigmactl.sh``. This script allows you to set up the default configuration on a more cooked way:
 
-![Sample](https://github.com/rafael-santiago/dev-enigma/blob/master/etc/enigma-ctl-sample.gif)
+![Sample](https://github.com/rafael-santiago/dev-enigma/blob/master/etc/enigmactl-sample.gif)
 
 This shell script is installed with the device driver and it is based on ``bash``.
 
