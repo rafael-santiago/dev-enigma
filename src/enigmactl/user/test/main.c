@@ -537,17 +537,26 @@ CUTE_TEST_CASE(enigmactl_trinket_poking_tests)
 
     system("rmmod enigma");
 
-    sprintf(cmd, "insmod %s", modpath);
+    sleep(1);
 
     //  INFO(Santiago): no module, no args.
     CUTE_ASSERT(system(binpath) == 0);
 
+    sprintf(cmd, "%s --unset", binpath);
+    CUTE_ASSERT(system(cmd) != 0);
+
+    sprintf(cmd, "insmod %s", modpath);
     CUTE_ASSERT(system(cmd) == 0);
+
+    sleep(1);
 
     //  INFO(Santiago): with module, no args.
     CUTE_ASSERT(system(binpath) == 0);
 
     sprintf(cmd, "%s --help", binpath);
+    CUTE_ASSERT(system(cmd) == 0);
+
+    sprintf(cmd, "%s --unset", binpath);
     CUTE_ASSERT(system(cmd) == 0);
 
     sprintf(cmd, "%s --set", binpath);
@@ -609,6 +618,11 @@ CUTE_TEST_CASE(enigmactl_trinket_poking_tests)
 
     sprintf(cmd, "%s --set --l-rotor=i --m-rotor=ii --r-rotor=iii --l-rotor-at=a --m-rotor-at=a --r-rotor-at=z --reflector=c --plugboard=a/b,c/d,e/f,x/g", binpath);
     CUTE_ASSERT(system(cmd) == 0);
+
+    sprintf(cmd, "%s --unset", binpath);
+    CUTE_ASSERT(system(cmd) == 0);
+
+    sleep(1);
 
     CUTE_ASSERT(system("rmmod enigma") == 0);
 #endif

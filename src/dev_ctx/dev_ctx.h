@@ -55,4 +55,6 @@ void destroy_uline_mutexes(void);
 
 int set_default_enigma_setting(const libeel_enigma_ctx *enigma);
 
+int unset_default_enigma_setting(void);
+
 #endif

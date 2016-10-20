@@ -254,6 +254,12 @@ libeel_enigma_ctx enigma_default_conf;
 ioctl(dev, ENIGMA_SET_DEFAULT_SETTING, &enigma_default_conf);
 ```
 
+If you want to unset the default setting you should:
+
+```c
+ioctl(dev, ENIGMA_UNSET_DEFAULT_SETTING);
+```
+
 Of course that this sample is pretty dull because it is kind of statical. You should to implement an application
 which receives the ``Enigma machine`` settings by command line and also the data buffer. Well, the device is done
 now this kind of code is up to you.
@@ -306,6 +312,12 @@ The option:
 - ``--m-ring`` defines the chosen middle ring position (from ``1`` to ``26``). It is optional, the default is ``1``.
 - ``--r-ring`` defines the chosen right ring position (from ``1`` to ``26``). It is optional, the default is ``1``.
 - ``--plugboard`` defines the swaps on the machine plugboard. (in the form of ``s1/s1',...,s10/s10'``). It is optional, the default is ``no swaps``.
+
+In order to clear a previous defined default setting you should use the ``--unset`` command as follows:
+
+```
+tux@sché:~/src# enigmactl --unset
+```
 
 You can also use the shell script ``enigmactl.sh``. This script allows you to set up the default configuration on a more cooked way:
 

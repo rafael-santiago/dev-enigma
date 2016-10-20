@@ -150,3 +150,18 @@ ___set_epilogue:
 
     return result;
 }
+
+int unset_default_enigma_setting(void) {
+    if (!mutex_trylock(&g_dev_ctx.lock)) {
+        return 0;
+    }
+
+    if (g_dev_ctx.default_setting != NULL) {
+        libeel_del_enigma_ctx(g_dev_ctx.default_setting);
+        g_dev_ctx.default_setting = NULL;
+    }
+
+    mutex_unlock(&g_dev_ctx.lock);
+
+    return 1;
+}

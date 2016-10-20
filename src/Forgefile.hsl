@@ -36,8 +36,11 @@ dev-enigma.prologue() {
 
 dev-enigma.epilogue() {
     if (hefesto.sys.last_forge_result() == 0) {
-        forge_user_enigmactl();
         run_test();
+        forge_user_enigmactl();
+        hefesto.sys.echo("\n" +
+                         "*** All /dev/enigma was built. Let's celebrate, we are still alive!\n" +
+                         "    For installing issues you should use: 'hefesto --install'\n");
     }
 }
 

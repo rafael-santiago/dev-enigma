@@ -99,6 +99,12 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
             }
             break;
 
+        case ENIGMA_UNSET_DEFAULT_SETTING:
+            if (!unset_default_enigma_setting()) {
+                result = -EFAULT;
+            }
+            break;
+
         default:
             result = -EINVAL;
             break;

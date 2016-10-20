@@ -16,17 +16,13 @@
 #include <linux/mutex.h>
 
 void __exit enigma_exit(void) {
-    libeel_enigma_ctx *enigma;
-
     printk(KERN_INFO "dev/enigma: The /dev/enigma is being unloaded...\n");
 
     deinit_ulines();
 
+    unset_default_enigma_setting();
+
     mutex_destroy(&dev_ctx()->lock);
-    enigma = dev_ctx()->default_setting;
-    if (enigma != NULL) {
-        libeel_del_enigma_ctx(enigma);
-    }
 
     device_destroy(dev_ctx()->device_class, MKDEV(dev_ctx()->major_nr, 0));
 
