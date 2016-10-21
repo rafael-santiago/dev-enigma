@@ -13,33 +13,19 @@
 #include <sys/ioctl.h>
 #include <string.h>
 
+#define BREATH_INSECS 5
+
 static int devfd;
 
-CUTE_TEST_CASE(lkm_ins_rm_tests)
+CUTE_TEST_CASE(open_tests)
     int exit_code;
     int fd;
-
-    system("rmmod enigma 2>&1 > /dev/null");
-
-    sleep(1);
-
-    exit_code = system("insmod ../enigma.ko");
-
-    sleep(1);
-
-    CUTE_ASSERT(exit_code == 0);
 
     fd = open("/dev/enigma", O_RDWR);
 
     CUTE_ASSERT(fd != -1);
 
     close(fd);
-
-    sleep(1);
-
-    exit_code = system("rmmod enigma");
-
-    CUTE_ASSERT(exit_code == 0);
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(dev_ctls_tests)
@@ -47,25 +33,21 @@ CUTE_TEST_CASE(dev_ctls_tests)
     libeel_enigma_ctx daily_setting;
     int result = 0;
 
-    CUTE_ASSERT(system("insmod ../enigma.ko") == 0);
-
-    sleep(1);
-
     fd = open("/dev/enigma", O_RDWR);
 
     CUTE_ASSERT(fd >= 0);
 
     CUTE_ASSERT(ioctl(fd, ENIGMA_RESET) != 0);
 
-    sleep(1);
+    sleep(BREATH_INSECS);
 
     CUTE_ASSERT(ioctl(fd, ENIGMA_SET, NULL) != 0);
 
-    sleep(1);
+    sleep(BREATH_INSECS);
 
     CUTE_ASSERT(ioctl(fd, ENIGMA_UNSET_DEFAULT_SETTING) == 0);
 
-    sleep(1);
+    sleep(BREATH_INSECS);
 
     CUTE_ASSERT(ioctl(fd, ENIGMA_SET_DEFAULT_SETTING, NULL) != 0);
 
@@ -104,11 +86,11 @@ CUTE_TEST_CASE(dev_ctls_tests)
 
     CUTE_ASSERT(ioctl(fd, ENIGMA_SET, &daily_setting) == 0);
 
-    sleep(1);
+    sleep(BREATH_INSECS);
 
     CUTE_ASSERT(ioctl(fd, ENIGMA_SET_DEFAULT_SETTING, &daily_setting) == 0);
 
-    sleep(1);
+    sleep(BREATH_INSECS);
 
     result = ioctl(fd, ENIGMA_RESET);
 
@@ -121,21 +103,17 @@ CUTE_TEST_CASE(dev_ctls_tests)
 
     CUTE_ASSERT(result == 0);
 
-    sleep(1);
+    sleep(BREATH_INSECS);
 
     CUTE_ASSERT(ioctl(fd, ENIGMA_RESET) == 0);
 
-    sleep(1);
+    sleep(BREATH_INSECS);
 
     CUTE_ASSERT(ioctl(fd, ENIGMA_UNSET_DEFAULT_SETTING) == 0);
 
-    sleep(1);
+    sleep(BREATH_INSECS);
 
     close(fd);
-
-    sleep(1);
-
-    CUTE_ASSERT(system("rmmod enigma") == 0);
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(devio_open_tests)
@@ -189,7 +167,7 @@ CUTE_TEST_CASE(devio_ioctldefaultset_tests)
 
     CUTE_ASSERT(ioctl(devfd, ENIGMA_SET_DEFAULT_SETTING, &dev_enigma) == 0);
 
-    sleep(1);
+    sleep(BREATH_INSECS);
 
     CUTE_ASSERT(close(devfd) == 0);
 CUTE_TEST_CASE_END
@@ -235,10 +213,6 @@ CUTE_TEST_CASE(usage_lines_tests)
     int fd[usage_lines_nr];
     int f;
 
-    CUTE_ASSERT(system("insmod ../enigma.ko") == 0);
-
-    sleep(1);
-
     for (f = 0; f < usage_lines_nr; f++) {
         fd[f] = open("/dev/enigma", O_RDWR);
         CUTE_ASSERT(fd[f] > -1);
@@ -257,17 +231,9 @@ CUTE_TEST_CASE(usage_lines_tests)
     for (f = 1; f < usage_lines_nr; f++) {
         CUTE_ASSERT(close(fd[f]) == 0);
     }
-
-    sleep(1);
-
-    CUTE_ASSERT(system("rmmod enigma") == 0);
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE_SUITE(device_poking_tests)
-    CUTE_ASSERT(system("insmod ../enigma.ko") == 0);
-
-    sleep(1);
-
     CUTE_RUN_TEST(devio_open_tests);
     CUTE_RUN_TEST(devio_ioctlset_tests);
     CUTE_RUN_TEST(devio_write_tests);
@@ -276,16 +242,6 @@ CUTE_TEST_CASE_SUITE(device_poking_tests)
     CUTE_RUN_TEST(devio_write_inv_tests);
     CUTE_RUN_TEST(devio_read_inv_tests);
     CUTE_RUN_TEST(devio_close_tests);
-
-    sleep(1);
-
-    CUTE_ASSERT(system("rmmod enigma") == 0);
-
-    sleep(1);
-
-    CUTE_ASSERT(system("insmod ../enigma.ko") == 0);
-
-    sleep(1);
 
     CUTE_RUN_TEST(devio_ioctldefaultset_tests);
 
@@ -298,22 +254,37 @@ CUTE_TEST_CASE_SUITE(device_poking_tests)
     CUTE_RUN_TEST(devio_write_inv_tests);
     CUTE_RUN_TEST(devio_read_inv_tests);
     CUTE_RUN_TEST(devio_close_tests);
-
-    sleep(1);
-
-    CUTE_ASSERT(system("rmmod enigma") == 0);
 CUTE_TEST_CASE_SUITE_END
 
 CUTE_TEST_CASE(device_tests)
+    int exit_code = 1;
+
     printf("\n\n\033[1m\033[31m"
            "*** Hello Human, step back, I will test the \"enigma.ko\" within 5 secs.\n"
            "    In case of any explosion, I strongly advise you to restart this computer. ***\033[m\n\n");
+
     sleep(5);
 
-    CUTE_RUN_TEST(lkm_ins_rm_tests);
+    system("rmmod enigma 2>&1 > /dev/null");
+
+    sleep(BREATH_INSECS);
+
+    exit_code = system("insmod ../enigma.ko");
+
+    sleep(BREATH_INSECS);
+
+    CUTE_ASSERT(exit_code == 0);
+
+    CUTE_RUN_TEST(open_tests);
     CUTE_RUN_TEST(dev_ctls_tests);
     CUTE_RUN_TEST(usage_lines_tests);
     CUTE_RUN_TEST_SUITE(device_poking_tests);
+
+    sleep(BREATH_INSECS);
+
+    exit_code = system("rmmod enigma");
+
+    CUTE_ASSERT(exit_code == 0);
 CUTE_TEST_CASE_END
 
 CUTE_MAIN(device_tests)
