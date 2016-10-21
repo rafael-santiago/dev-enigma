@@ -56,15 +56,3 @@ local function forge_user_enigmactl() : result type none {
         }
     }
 }
-
-local function cleaner() : result type none {
-    var option type list;
-
-    $option = hefesto.sys.get_option("clean");
-
-    if ($option.count() > 0) {
-        mkclean();
-        hefesto.sys.echo("*** Clean.\n");
-        hefesto.project.abort(0);
-    }
-}

@@ -8,7 +8,18 @@
 
 include ~/fsutil.hsl
 
-function mkclean() : result type none {
+function cleaner() : result type none {
+    var option type list;
+
+    $option = hefesto.sys.get_option("clean");
+
+    if ($option.count() > 0) {
+        mkclean();
+        hefesto.project.abort(0);
+    }
+}
+
+local function mkclean() : result type none {
     hefesto.sys.echo("*** Making it clean... wait...\n");
 
     var dirs type list;
@@ -18,7 +29,7 @@ function mkclean() : result type none {
 
     hefesto.sys.cd($dirs.item(0));
 
-    hefesto.sys.echo("*** Done.\n");
+    hefesto.sys.echo("*** Clean\n");
 }
 
 local function mkclean_recur(dirs type list) : result type none {
