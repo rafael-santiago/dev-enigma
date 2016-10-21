@@ -29,6 +29,11 @@ static struct file_operations fops = {
 int __init enigma_init(void) {
     printk(KERN_INFO "dev/enigma: Initializing the /dev/enigma...\n");
 
+    dev_ctx()->default_setting = NULL;
+    mutex_init(&dev_ctx()->lock);
+
+    init_ulines();
+
     dev_ctx()->major_nr = register_chrdev(0, DEVNAME, &fops);
 
     if (dev_ctx()->major_nr < 0) {
@@ -56,11 +61,6 @@ int __init enigma_init(void) {
         printk(KERN_INFO "dev/enigma: \tdevice creation fail.\n");
         return PTR_ERR(dev_ctx()->device);
     }
-
-    dev_ctx()->default_setting = NULL;
-    mutex_init(&dev_ctx()->lock);
-
-    init_ulines();
 
     printk(KERN_INFO "dev/enigma: Done.\n");
 
