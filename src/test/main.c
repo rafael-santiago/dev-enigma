@@ -45,6 +45,7 @@ CUTE_TEST_CASE_END
 CUTE_TEST_CASE(dev_ctls_tests)
     int fd;
     libeel_enigma_ctx daily_setting;
+    int result = 0;
 
     CUTE_ASSERT(system("insmod ../enigma.ko") == 0);
 
@@ -109,7 +110,16 @@ CUTE_TEST_CASE(dev_ctls_tests)
 
     sleep(1);
 
-    CUTE_ASSERT(ioctl(fd, ENIGMA_RESET) == 0);
+    result = ioctl(fd, ENIGMA_RESET);
+
+    if (result != 0) {
+        perror("ioctl");
+        printf("result = %d\n", result);
+        sleep(2);
+        result = ioctl(fd, ENIGMA_RESET);
+    }
+
+    CUTE_ASSERT(result == 0);
 
     sleep(1);
 
