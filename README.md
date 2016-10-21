@@ -228,7 +228,7 @@ tux@sché:~/src# _
 ```
 
 The presented sample introduces an ``i/o`` control that is useful in cases in that you want to return your
-``Enigma`` to its initial state. There you have used it in order to decrypt the previous encrypted buffer.
+``Enigma`` to its initial state. There we have used it in order to decrypt the previous encrypted buffer.
 So, as you know the ``Enigma`` is about a reciprocal cipher. Like ``albam``, ``atbash`` or even our ultra
 modern over used ``xor``.
 

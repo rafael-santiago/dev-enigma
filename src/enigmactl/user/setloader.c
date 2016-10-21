@@ -291,7 +291,7 @@ static void ld_plugboard(libeel_enigma_ctx *enigma, const char *data) {
                 libeel_plugboard(enigma, 9).r = *(dp + 2);
                 break;
 
-            case 10:
+            case 9:
                 libeel_plugboard(enigma, 10).l = *dp;
                 libeel_plugboard(enigma, 10).r = *(dp + 2);
                 break;
