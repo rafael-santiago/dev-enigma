@@ -30,7 +30,7 @@ following way:
 ```
 tux@sché:~/Bletchley# git clone https://github.com/rafael-santiago/helios helios
 tux@sché:~/Bletchley# cd helios
-tux@sché:~/Bletchley/helios# hefesto --install=lnx-toolsets
+tux@sché:~/Bletchley/helios# hefesto --install=lnx-module-toolset
 ```
 
 After executing the incantations above your ``Hefesto`` copy will start to know how to build

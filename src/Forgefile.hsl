@@ -16,7 +16,7 @@ var cflags type list;
 var libraries type list;
 var ldflags type list;
 
-project dev-enigma : toolset "linux-module" : "mod.c", $includes, $cflags, $libraries, $ldflags, "enigma";
+project dev-enigma : toolset "linux-lkm" : "mod.c", $includes, $cflags, $libraries, $ldflags, "enigma";
 
 dev-enigma.prologue() {
     cleaner();
