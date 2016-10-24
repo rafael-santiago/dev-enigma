@@ -21,7 +21,7 @@ enigmactl.prologue() {
 
     $sources.ls(".*\\.c$");
     $includes.add_item("../");
-    $includes.add_item("../../mod_traps");
+    $includes.add_item("../../mod_traps/" + hefesto.sys.os_name());
     $includes.add_item("eel/src");
 
     $libraries.add_item("eel/src/lib");
