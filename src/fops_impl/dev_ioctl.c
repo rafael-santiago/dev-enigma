@@ -106,7 +106,7 @@ long dev_ioctl(struct file *fp, unsigned int cmd, unsigned long usr_param) {
             break;
 
         default:
-            result = -ENOTSUPP;
+            result = -ENOTTY;
             break;
 
     }
