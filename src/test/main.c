@@ -13,7 +13,7 @@
 #include <sys/ioctl.h>
 #include <string.h>
 
-#define BREATH_INSECS 5
+#define BREATH_INSECS 0  //  WARN(Santiago): If you are experiencing some LKM loading/unload issues try to increase it.
 
 static int devfd;
 
