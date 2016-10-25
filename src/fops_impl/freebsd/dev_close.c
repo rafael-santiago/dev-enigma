@@ -5,11 +5,9 @@
  * the terms of the GNU General Public License version 2.
  *
  */
-#ifndef DEV_ENIGMA_FOPS_IMPL_LINUX_DEV_OPEN_H
-#define DEV_ENIGMA_FOPS_IMPL_LINUX_DEV_OPEN_H 1
+#include "dev_close.h"
 
-#include <linux/fs.h>
+int dev_close(struct cdev *dev, int flags, int devtype, struct thread *td) {
+    return 1;
+}
 
-int dev_open(struct inode *ip, struct file *fp);
-
-#endif

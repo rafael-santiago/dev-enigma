@@ -5,11 +5,8 @@
  * the terms of the GNU General Public License version 2.
  *
  */
-#ifndef DEV_ENIGMA_FOPS_IMPL_LINUX_DEV_OPEN_H
-#define DEV_ENIGMA_FOPS_IMPL_LINUX_DEV_OPEN_H 1
+#include "dev_ioctl.h"
 
-#include <linux/fs.h>
-
-int dev_open(struct inode *ip, struct file *fp);
-
-#endif
+int dev_ioctl(struct cdev *dev, u_long cmd, caddr_t data, int flag, struct thread *td) {
+    return -ENOTTY;
+}

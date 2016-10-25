@@ -10,7 +10,18 @@
 
 #include <eel.h>
 #include <ebuf.h>
+
+#if defined(__linux__)
+
 #include <linux/mutex.h>
+
+#elif defined(__FreeBSD__)
+
+#include <sys/param.h>
+#include <sys/lock.h>
+#include <sys/mutex.h>
+
+#endif
 
 //  INFO(Santiago): DEV_USAGE_LINES_NR specifies the number of users
 //                  which can be simultaneously hung in this device.
@@ -20,7 +31,11 @@
 struct dev_enigma_usage_line_ctx {
     libeel_enigma_ctx *enigma;
     ebuf_ctx *ebuf_head, *ebuf_tail;
+#if defined(__linux__)
     struct mutex lock;
+#elif defined(__FreeBSD__)
+    struct mtx lock;
+#endif
     int has_init;
 };
 
@@ -30,7 +45,11 @@ struct dev_enigma_ctx {
     struct class *device_class;
     struct device *device;
     libeel_enigma_ctx *default_setting;
+#if defined(__linux__)
     struct mutex lock;
+#elif defined(__FreeBSD__)
+    struct mtx lock;
+#endif
 };
 
 struct dev_enigma_ctx *dev_ctx(void);

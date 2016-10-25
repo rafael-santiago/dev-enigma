@@ -6,7 +6,8 @@
 #
 #
 
-include ~/toolsets/linux/linux-module.hsl
+include on linux ~/toolsets/linux/linux-module.hsl
+include on freebsd ~/toolsets/freebsd/freebsd-module.hsl
 include run_test.hsl
 include installer.hsl
 include mkclean.hsl
@@ -16,7 +17,19 @@ var cflags type list;
 var libraries type list;
 var ldflags type list;
 
-project dev-enigma : toolset "linux-lkm" : "mod.c", $includes, $cflags, $libraries, $ldflags, "enigma";
+var LKM_toolset type string;
+
+dev-enigma.preloading() {
+    if (hefesto.sys.os_name() == "linux") {
+        $LKM_toolset = "linux-lkm";
+    } else if (hefesto.sys.os_name() == "freebsd") {
+        $LKM_toolset = "freebsd-kld";
+    } else {
+        $LKM_toolset = "cry-baby-cry";
+    }
+}
+
+project dev-enigma : toolset $LKM_toolset : "mod.c", $includes, $cflags, $libraries, $ldflags, "enigma";
 
 dev-enigma.prologue() {
     cleaner();

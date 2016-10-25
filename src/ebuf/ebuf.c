@@ -6,16 +6,36 @@
  *
  */
 #include "ebuf.h"
+
+#if defined(__linux__)
+
 #include <linux/slab.h>
 
 #define new_ebuf_ctx(e) ( (e) = (ebuf_ctx *) kmalloc(sizeof(ebuf_ctx), GFP_ATOMIC), (e)->c = 0, (e)->next = NULL )
+
+#elif defined(__FreeBSD__)
+
+#include <sys/param.h>
+#include <sys/malloc.h>
+#include <sys/kernel.h>
+
+MALLOC_DECLARE(M_EBUF);
+MALLOC_DEFINE(M_EBUF, "DEV_ENIGMA_ebuf", "Allocations related with ebuf");
+
+#define new_ebuf_ctx(e) ( (e) = (ebuf_ctx *) malloc(sizeof(ebuf_ctx), M_EBUF, M_NOWAIT), (e)->c = 0, (e)->next = NULL )
+
+#endif
 
 void del_ebuf_ctx(ebuf_ctx *ebuf) {
     ebuf_ctx *t, *p;
     for (t = p = ebuf; t != NULL; p = t) {
         t = p->next;
         p->c = 0;
+#if defined(__linux__)
         kfree(p);
+#elif defined(__FreeBSD__)
+        free(p, M_EBUF);
+#endif
     }
 }
 

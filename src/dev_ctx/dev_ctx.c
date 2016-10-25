@@ -6,11 +6,11 @@
  *
  */
 #include "dev_ctx.h"
+#include <sys/systm.h>
 #include <eel.h>
 #include <ebuf.h>
-#include <linux/mutex.h>
 
-static struct dev_enigma_ctx g_dev_ctx = { 0 };
+static struct dev_enigma_ctx g_dev_ctx;
 
 static void copy_default_enigma_setting(libeel_enigma_ctx *enigma);
 
@@ -23,9 +23,15 @@ int lock_uline(const int uline) {
         return 0;
     }
 
+#if defined(__linux__)
     if (!mutex_trylock(&g_dev_ctx.ulines[uline].lock)) {
         return 0;
     }
+#elif defined(__FreeBSD__)
+    if (!mtx_trylock(&g_dev_ctx.ulines[uline].lock)) {
+        return 0;
+    }
+#endif
 
     return 1;
 }
@@ -34,7 +40,11 @@ void unlock_uline(const int uline) {
     if (!(uline >= 0 && uline <= DEV_USAGE_LINES_NR)) {
         return;
     }
+#if defined(__linux__)
     mutex_unlock(&g_dev_ctx.ulines[uline].lock);
+#elif defined(__FreeBSD__)
+    mtx_unlock(&g_dev_ctx.ulines[uline].lock);
+#endif
 }
 
 int new_uline(void) {
@@ -96,7 +106,11 @@ void init_ulines(void) {
     for (u = 0; u < DEV_USAGE_LINES_NR; u++) {
         g_dev_ctx.ulines[u].enigma = NULL;
         g_dev_ctx.ulines[u].ebuf_head = NULL;
+#if defined(__linux__)
         mutex_init(&g_dev_ctx.ulines[u].lock);
+#elif defined(__FreeBSD__)
+        mtx_init(&g_dev_ctx.ulines[u].lock, "DEV_ENIMA_uline_lock", NULL, MTX_DEF);
+#endif
         g_dev_ctx.ulines[u].has_init = 0;
     }
 }
@@ -105,7 +119,11 @@ void deinit_ulines(void) {
     int u;
     for (u = 0; u < DEV_USAGE_LINES_NR; u++) {
         release_uline(u);
+#if defined(__linux__)
         mutex_destroy(&g_dev_ctx.ulines[u].lock);
+#elif defined(__FreeBSD__)
+        mtx_destroy(&g_dev_ctx.ulines[u].lock);
+#endif
     }
 }
 
@@ -113,18 +131,31 @@ static void copy_default_enigma_setting(libeel_enigma_ctx *enigma) {
     if (enigma == NULL) {
         return;
     }
+#if defined(__linux__)
     if (mutex_trylock(&g_dev_ctx.lock)) {
         memcpy(enigma, g_dev_ctx.default_setting, sizeof(libeel_enigma_ctx));
         mutex_unlock(&g_dev_ctx.lock);
     }
+#elif defined(__FreeBSD__)
+    if (mtx_trylock(&g_dev_ctx.lock)) {
+        memcpy(enigma, g_dev_ctx.default_setting, sizeof(libeel_enigma_ctx));
+        mtx_unlock(&g_dev_ctx.lock);
+    }
+#endif
 }
 
 int set_default_enigma_setting(const libeel_enigma_ctx *enigma) {
     int result = 0;
 
+#if defined(__linux__)
     if (!mutex_trylock(&g_dev_ctx.lock)) {
         return 0;
     }
+#else
+    if (!mtx_trylock(&g_dev_ctx.lock)) {
+        return 0;
+    }
+#endif
 
     if (g_dev_ctx.default_setting != NULL) {
         libeel_del_enigma_ctx(g_dev_ctx.default_setting);
@@ -146,22 +177,36 @@ ___set_epilogue:
         g_dev_ctx.default_setting = NULL;
     }
 
+#if defined(__linux__)
     mutex_unlock(&g_dev_ctx.lock);
+#elif defined(__FreeBSD__)
+    mtx_unlock(&g_dev_ctx.lock);
+#endif
 
     return result;
 }
 
 int unset_default_enigma_setting(void) {
+#if defined(__linux__)
     if (!mutex_trylock(&g_dev_ctx.lock)) {
         return 0;
     }
+#elif defined(__FreeBSD__)
+    if (!mtx_trylock(&g_dev_ctx.lock)) {
+        return 0;
+    }
+#endif
 
     if (g_dev_ctx.default_setting != NULL) {
         libeel_del_enigma_ctx(g_dev_ctx.default_setting);
         g_dev_ctx.default_setting = NULL;
     }
 
+#if defined(__linux__)
     mutex_unlock(&g_dev_ctx.lock);
+#elif defined(__FreeBSD__)
+    mtx_unlock(&g_dev_ctx.lock);
+#endif
 
     return 1;
 }

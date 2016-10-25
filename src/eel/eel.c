@@ -6,10 +6,27 @@
  *
  */
 #include "eel.h"
+
+#if defined(__linux__)
+
 #include <linux/ctype.h>
 #include <linux/types.h>
 #include <linux/string.h>
 #include <linux/slab.h>
+
+#elif defined(__FreeBSD__)
+
+#include <sys/param.h>
+#include <sys/kernel.h>
+#include <sys/systm.h>
+#include <sys/ctype.h>
+#include <sys/types.h>
+#include <sys/malloc.h>
+
+MALLOC_DECLARE(M_EEL);
+MALLOC_DEFINE(M_EEL, "DEV_ENIGMA_eel", "Allocations related with libeel");
+
+#endif
 
 struct libeel_rotor_wiring_ctx {
     libeel_rotor_wiring_t normal, inverse;
@@ -368,7 +385,11 @@ char libeel_type(libeel_enigma_ctx *enigma) {
 void libeel_del_enigma_ctx(libeel_enigma_ctx *enigma) {
     if (enigma != NULL) {
         libeel_clear_enigma_ctx(enigma);
+#if defined(__linux__)
         kfree(enigma);
+#elif defined(__FreeBSD__)
+        free(enigma, M_EEL);
+#endif
     }
 }
 
@@ -382,7 +403,11 @@ static void libeel_clear_enigma_ctx(libeel_enigma_ctx *enigma) {
 }
 
 libeel_enigma_ctx *libeel_new_enigma_ctx(void) {
+#if defined(__linux__)
     libeel_enigma_ctx *enigma = (libeel_enigma_ctx *)kmalloc(sizeof(libeel_enigma_ctx), GFP_ATOMIC);
+#elif defined(__FreeBSD__)
+    libeel_enigma_ctx *enigma = (libeel_enigma_ctx *)malloc(sizeof(libeel_enigma_ctx), M_EEL, M_NOWAIT);
+#endif
     libeel_clear_enigma_ctx(enigma);
     return enigma;
 }
