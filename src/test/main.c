@@ -252,7 +252,6 @@ CUTE_TEST_CASE(usage_lines_tests)
     CUTE_ASSERT(close(fd[0]) == 0);
 
     f = open("/dev/enigma", O_RDWR);
-
     CUTE_ASSERT(f > -1);
 
     CUTE_ASSERT(close(f) == 0);
@@ -306,7 +305,9 @@ CUTE_TEST_CASE(device_tests)
 
     CUTE_RUN_TEST(open_tests);
     CUTE_RUN_TEST(dev_ctls_tests);
+#if !defined(__FreeBSD__)
     CUTE_RUN_TEST(usage_lines_tests);
+#endif
     CUTE_RUN_TEST_SUITE(device_poking_tests);
 
     sleep(BREATH_INSECS);

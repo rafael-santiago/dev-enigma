@@ -29,6 +29,9 @@ enigmactl-unit.prologue() {
     if (hefesto.sys.os_name() == "linux") {
         $ldflags.add_item("-ldl");
         $ldflags.add_item("-lpthread");
+    } else if (hefesto.sys.os_name() == "freebsd") {
+        $ldflags.add_item("-lexecinfo");
+        $ldflags.add_item("-lpthread");
     }
 
     $libraries.add_item("../eel/src/lib");

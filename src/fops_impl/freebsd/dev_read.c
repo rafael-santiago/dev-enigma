@@ -13,7 +13,8 @@ int dev_read(struct cdev *dev, struct uio *uio, int ioflags) {
     int uline;
     struct dev_enigma_usage_line_ctx *ulp;
     char byte;
-    int read_bytes = 0;
+    size_t read_bytes = 0;
+    size_t user_len = 0;
 
     uline = *(int *)dev->si_drv1;
 
@@ -27,7 +28,9 @@ int dev_read(struct cdev *dev, struct uio *uio, int ioflags) {
         return -EBUSY;
     }
 
-    while (read_bytes != uio->uio_iov->iov_len && ulp->ebuf_head != NULL) {
+    user_len = uio->uio_iov->iov_len;
+
+    while (read_bytes != user_len && ulp->ebuf_head != NULL) {
         byte = get_char_from_ebuf_ctx(&ulp->ebuf_head);
         if (uiomove(&byte, 1, uio) != 0) {
             read_bytes = -EFAULT;
@@ -39,5 +42,5 @@ int dev_read(struct cdev *dev, struct uio *uio, int ioflags) {
 __dev_read_epilogue:
     unlock_uline(uline);
 
-    return read_bytes;
+    return (read_bytes == user_len) ? 0 : EFAULT;
 }

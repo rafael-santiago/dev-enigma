@@ -20,6 +20,7 @@ enigmactl.prologue() {
     forge_eel();
 
     $sources.ls(".*\\.c$");
+    $includes.add_item("../../");
     $includes.add_item("../");
     $includes.add_item("../../mod_traps/" + hefesto.sys.os_name());
     $includes.add_item("eel/src");

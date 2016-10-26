@@ -67,7 +67,7 @@ CUTE_TEST_CASE(enigmactl_option_tests)
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(enigmactl_setloader_tests)
-
+printf("booooo!\n");
     //  INFO(Santiago): Bad constructions.
 
     char *argv_0[] = {
@@ -538,6 +538,7 @@ CUTE_TEST_CASE(enigmactl_setloader_tests)
 
     libeel_enigma_ctx *setting = NULL;
 
+    set_argc_argv(0, NULL);
     setting = ld_enigma_setting();
 
     CUTE_ASSERT(setting == NULL);
@@ -560,8 +561,6 @@ CUTE_TEST_CASE(enigmactl_setloader_tests)
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(enigmactl_trinket_poking_tests)
-#if defined(__linux__)
-    const char *modpath = "../../../enigma.ko";
     const char *binpath = "../bin/enigmactl";
     char cmd[255] = "";
 
@@ -654,7 +653,6 @@ CUTE_TEST_CASE(enigmactl_trinket_poking_tests)
     sleep(1);
 
     CUTE_ASSERT(unload_module() == 0);
-#endif
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(enigmactl_tests)
