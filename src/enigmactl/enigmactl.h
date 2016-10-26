@@ -9,7 +9,13 @@
 #define DEV_ENIGMA_ENIGMACTL_H 1
 
 #if defined(__linux__)
+
 #include <linux/ioctl.h>
+
+#elif defined(__FreeBSD__)
+
+#include <sys/ioccom.h>
+
 #endif
 
 #define ENIGMA_IOC_MAGIC 'E'   //  WARN(Santiago): I did not pick a valid IOC_MAGIC, for sure that it will clash.
