@@ -13,6 +13,36 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int load_module(void);
+
+static int unload_module(void);
+
+
+static int load_module(void) {
+    int exit_code = 1;
+
+#if defined(__linux__)
+    exit_code = system("insmod ../../../enigma.ko");
+#elif defined(__FreeBSD__)
+    exit_code = system("kldload ../../../enigma.ko");
+#endif
+
+    return exit_code;
+}
+
+static int unload_module(void) {
+    int exit_code = 1;
+
+#if defined(__linux__)
+    exit_code = system("rmmod enigma");
+#elif defined(__FreeBSD__)
+    exit_code = system("kldunload enigma.ko");
+#endif
+
+    return exit_code;
+}
+
+
 CUTE_TEST_CASE(enigmactl_option_tests)
     char *argv[] = {
         "--foo=bar",
@@ -535,7 +565,7 @@ CUTE_TEST_CASE(enigmactl_trinket_poking_tests)
     const char *binpath = "../bin/enigmactl";
     char cmd[255] = "";
 
-    system("rmmod enigma");
+    unload_module();
 
     sleep(1);
 
@@ -545,8 +575,7 @@ CUTE_TEST_CASE(enigmactl_trinket_poking_tests)
     sprintf(cmd, "%s --unset", binpath);
     CUTE_ASSERT(system(cmd) != 0);
 
-    sprintf(cmd, "insmod %s", modpath);
-    CUTE_ASSERT(system(cmd) == 0);
+    CUTE_ASSERT(load_module() == 0);
 
     sleep(1);
 
@@ -624,7 +653,7 @@ CUTE_TEST_CASE(enigmactl_trinket_poking_tests)
 
     sleep(1);
 
-    CUTE_ASSERT(system("rmmod enigma") == 0);
+    CUTE_ASSERT(unload_module() == 0);
 #endif
 CUTE_TEST_CASE_END
 

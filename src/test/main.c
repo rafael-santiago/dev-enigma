@@ -17,6 +17,34 @@
 
 static int devfd;
 
+static int load_module(void);
+
+static int unload_module(void);
+
+static int load_module(void) {
+    int exit_code = 1;
+
+#if defined(__linux__)
+    exit_code = system("insmod ../enigma.ko");
+#elif defined(__FreeBSD__)
+    exit_code = system("kldload ../enigma.ko");
+#endif
+
+    return exit_code;
+}
+
+static int unload_module(void) {
+    int exit_code = 1;
+
+#if defined(__linux__)
+    exit_code = system("rmmod enigma");
+#elif defined(__FreeBSD__)
+    exit_code = system("kldunload enigma.ko");
+#endif
+
+    return exit_code;
+}
+
 CUTE_TEST_CASE(open_tests)
     int exit_code;
     int fd;
@@ -224,6 +252,7 @@ CUTE_TEST_CASE(usage_lines_tests)
     CUTE_ASSERT(close(fd[0]) == 0);
 
     f = open("/dev/enigma", O_RDWR);
+
     CUTE_ASSERT(f > -1);
 
     CUTE_ASSERT(close(f) == 0);
@@ -265,11 +294,11 @@ CUTE_TEST_CASE(device_tests)
 
     sleep(5);
 
-    system("rmmod enigma 2>&1 > /dev/null");
+    unload_module();
 
     sleep(BREATH_INSECS);
 
-    exit_code = system("insmod ../enigma.ko");
+    exit_code = load_module();
 
     sleep(BREATH_INSECS);
 
@@ -282,7 +311,7 @@ CUTE_TEST_CASE(device_tests)
 
     sleep(BREATH_INSECS);
 
-    exit_code = system("rmmod enigma");
+    exit_code = unload_module();
 
     CUTE_ASSERT(exit_code == 0);
 CUTE_TEST_CASE_END
