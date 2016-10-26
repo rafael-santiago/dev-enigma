@@ -42,6 +42,7 @@ ssize_t dev_write(struct file *fp, const char __user *buf, size_t count, loff_t 
     }
 
     if (!lock_uline(uline)) {
+        kfree(temp_buf);
         return -EBUSY;
     }
 
