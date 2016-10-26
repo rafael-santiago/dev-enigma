@@ -19,7 +19,6 @@
 #include <sys/malloc.h>
 #include <sys/kernel.h>
 
-MALLOC_DECLARE(M_EBUF);
 MALLOC_DEFINE(M_EBUF, "DEV_ENIGMA_ebuf", "Allocations related with ebuf");
 
 #define new_ebuf_ctx(e) ( (e) = (ebuf_ctx *) malloc(sizeof(ebuf_ctx), M_EBUF, M_NOWAIT), (e)->c = 0, (e)->next = NULL )

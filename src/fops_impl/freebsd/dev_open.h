@@ -12,6 +12,9 @@
 #include <sys/module.h>
 #include <sys/kernel.h>
 #include <sys/systm.h>
+#include <sys/malloc.h>
+
+MALLOC_DECLARE(M_DEV_OPEN);
 
 int dev_open(struct cdev *dev, int flags, int devtype, struct thread *td);
 

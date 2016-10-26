@@ -6,8 +6,21 @@
  *
  */
 #include "dev_close.h"
+#include "dev_open.h"
+#include <dev_ctx.h>
+#include <sys/conf.h>
+#include <sys/malloc.h>
 
 int dev_close(struct cdev *dev, int flags, int devtype, struct thread *td) {
-    return 1;
+    if (dev->si_drv1 == NULL) {
+        return -EBADF;
+    }
+
+    release_uline(*(int *)dev->si_drv1);
+
+    free(dev->si_drv1, M_DEV_OPEN);
+    dev->si_drv1 = NULL;
+
+    return 0;
 }
 

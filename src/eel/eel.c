@@ -23,7 +23,6 @@
 #include <sys/types.h>
 #include <sys/malloc.h>
 
-MALLOC_DECLARE(M_EEL);
 MALLOC_DEFINE(M_EEL, "DEV_ENIGMA_eel", "Allocations related with libeel");
 
 #endif
