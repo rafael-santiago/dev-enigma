@@ -43,7 +43,11 @@ struct dev_enigma_ctx {
     struct dev_enigma_usage_line_ctx ulines[DEV_USAGE_LINES_NR];
     int major_nr;
     struct class *device_class;
+#if defined(__linux__)
     struct device *device;
+#elif defined(__FreeBSD__)
+    struct cdev *device;
+#endif
     libeel_enigma_ctx *default_setting;
 #if defined(__linux__)
     struct mutex lock;

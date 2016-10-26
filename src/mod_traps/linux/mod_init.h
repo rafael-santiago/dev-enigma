@@ -5,8 +5,8 @@
  * the terms of the GNU General Public License version 2.
  *
  */
-#ifndef DEV_ENIGMA_MOD_TRAPS_INIT_H
-#define DEV_ENIGMA_MOD_TRAPS_INIT_H 1
+#ifndef DEV_ENIGMA_MOD_TRAPS_LINUX_INIT_H
+#define DEV_ENIGMA_MOD_TRAPS_LINUX_INIT_H 1
 
 int enigma_init(void);
 

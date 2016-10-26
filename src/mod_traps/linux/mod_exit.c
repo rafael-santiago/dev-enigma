@@ -6,7 +6,7 @@
  *
  */
 #include "mod_exit.h"
-#include "mod_info.h"
+#include <mod_info.h>
 #include <dev_ctx.h>
 #include <eel.h>
 #include <linux/module.h>

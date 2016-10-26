@@ -39,6 +39,7 @@ dev-enigma.prologue() {
     # INFO(Santiago): The KBuild runs relative to the kernel source tree, for this reason is important to
     #                 define the local include directories as full-paths.
 
+    $includes.add_item(hefesto.sys.pwd());
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "eel"));
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "ebuf"));
     $includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "dev_ctx"));

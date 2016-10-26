@@ -7,6 +7,9 @@
  */
 #include <mod_init.h>
 #include <mod_exit.h>
+
+#if defined(__linux__)
+
 #include <linux/init.h>
 #include <linux/module.h>
 
@@ -25,3 +28,34 @@ static void __exit finis(void) {
 
 module_init(ini);
 module_exit(finis);
+
+#elif defined(__FreeBSD__)
+
+#include <sys/param.h>
+#include <sys/module.h>
+#include <sys/kernel.h>
+#include <sys/conf.h>
+
+static int enigma_modevent(module_t mod __unused, int event, void *arg __unused) {
+    int error = 0;
+
+    switch (event) {
+        case MOD_LOAD:
+            error = enigma_init();
+            break;
+
+        case MOD_UNLOAD:
+            enigma_exit();
+            break;
+
+        default:
+            error = EOPNOTSUPP;
+            break;
+    }
+
+    return error;
+}
+
+DEV_MODULE(enigma, enigma_modevent, NULL);
+
+#endif

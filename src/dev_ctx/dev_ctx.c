@@ -109,7 +109,7 @@ void init_ulines(void) {
 #if defined(__linux__)
         mutex_init(&g_dev_ctx.ulines[u].lock);
 #elif defined(__FreeBSD__)
-        mtx_init(&g_dev_ctx.ulines[u].lock, "DEV_ENIMA_uline_lock", NULL, MTX_DEF);
+        mtx_init(&g_dev_ctx.ulines[u].lock, "DEV_ENIGMA_uline_lock", NULL, MTX_DEF);
 #endif
         g_dev_ctx.ulines[u].has_init = 0;
     }

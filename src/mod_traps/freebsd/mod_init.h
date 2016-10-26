@@ -5,9 +5,9 @@
  * the terms of the GNU General Public License version 2.
  *
  */
-#ifndef DEV_ENIGMA_MOD_TRAPS_LINUX_MOD_EXIT_H
-#define DEV_ENIGMA_MOD_TRAPS_LINUX_MOD_EXIT_H 1
+#ifndef DEV_ENIGMA_MOD_TRAPS_FREEBSD_INIT_H
+#define DEV_ENIGMA_MOD_TRAPS_FREEBSD_INIT_H 1
 
-void enigma_exit(void);
+int enigma_init(void);
 
 #endif

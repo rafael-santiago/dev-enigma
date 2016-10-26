@@ -6,7 +6,7 @@
  *
  */
 #include "mod_init.h"
-#include "mod_info.h"
+#include <mod_info.h>
 #include <dev_ctx.h>
 #include <eel.h>
 #include <dev_open.h>
