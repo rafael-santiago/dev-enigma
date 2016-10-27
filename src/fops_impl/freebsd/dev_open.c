@@ -6,12 +6,13 @@
  *
  */
 #include "dev_open.h"
+#include "dev_close.h"
 #include <dev_ctx.h>
 #include <sys/conf.h>
 
 MALLOC_DEFINE(M_DEV_OPEN, "DEV_ENIGMA_dev_open", "Allocations related with dev_open");
 
-int dev_open(struct cdev *dev, int flags, int devtype, struct thread *td) {
+int dev_open(struct cdev *dev, int flags __unused, int devtype __unused, struct thread *td __unused) {
     int uline = new_uline();
 
     if (uline == -1) {
@@ -26,6 +27,7 @@ int dev_open(struct cdev *dev, int flags, int devtype, struct thread *td) {
 
     if (dev->si_drv1 != NULL) {
         *((int *)dev->si_drv1) = uline;
+        devfs_set_cdevpriv(dev->si_drv1, dev_close_dtor);
     }
 
     unlock_uline(uline);

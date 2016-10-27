@@ -15,4 +15,6 @@
 
 int dev_close(struct cdev *dev, int flags, int devtype, struct thread *td);
 
+void dev_close_dtor(void *data);
+
 #endif

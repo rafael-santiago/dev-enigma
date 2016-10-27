@@ -11,16 +11,21 @@
 #include <sys/conf.h>
 #include <sys/malloc.h>
 
-int dev_close(struct cdev *dev, int flags, int devtype, struct thread *td) {
+int dev_close(struct cdev *dev, int flags __unused, int devtype __unused, struct thread *td __unused) {
     if (dev->si_drv1 == NULL) {
         return -EBADF;
     }
 
-    release_uline(*(int *)dev->si_drv1);
-
-    free(dev->si_drv1, M_DEV_OPEN);
-    dev->si_drv1 = NULL;
-
     return 0;
+}
+
+void dev_close_dtor(void *data) {
+    if (data == NULL) {
+        return;
+    }
+
+    release_uline(*(int *)data);
+
+    free(data, M_DEV_OPEN);
 }
 

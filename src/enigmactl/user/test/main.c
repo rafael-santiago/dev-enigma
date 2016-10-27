@@ -67,7 +67,7 @@ CUTE_TEST_CASE(enigmactl_option_tests)
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(enigmactl_setloader_tests)
-printf("booooo!\n");
+
     //  INFO(Santiago): Bad constructions.
 
     char *argv_0[] = {
