@@ -40,7 +40,7 @@ local function mkclean_recur(dirs type list) : result type none {
         if (hefesto.sys.cd($dirs.item($d))) {
             hefesto.sys.echo(" Now on " + $dirs.item($d) + "...\n");
             var objs type list;
-            $objs.ls(".*\\.(o|ko)$");
+            $objs.ls(".*\\.(o|ko|a)$");
 
             while ($objs.count() > 0) {
                 hefesto.sys.echo("  rm " + $objs.item(0) + "...\n");

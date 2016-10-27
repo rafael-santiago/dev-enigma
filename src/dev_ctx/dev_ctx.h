@@ -41,9 +41,9 @@ struct dev_enigma_usage_line_ctx {
 
 struct dev_enigma_ctx {
     struct dev_enigma_usage_line_ctx ulines[DEV_USAGE_LINES_NR];
+#if defined(__linux__)
     int major_nr;
     struct class *device_class;
-#if defined(__linux__)
     struct device *device;
 #elif defined(__FreeBSD__)
     struct cdev *device;
@@ -57,8 +57,6 @@ struct dev_enigma_ctx {
 };
 
 struct dev_enigma_ctx *dev_ctx(void);
-
-libeel_enigma_ctx *dev_enigma(const int uline);
 
 int lock_uline(const int uline);
 

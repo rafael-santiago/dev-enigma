@@ -31,6 +31,7 @@ module_exit(finis);
 
 #elif defined(__FreeBSD__)
 
+#include <mod_quiesce.h>
 #include <sys/param.h>
 #include <sys/module.h>
 #include <sys/kernel.h>
@@ -46,6 +47,12 @@ static int enigma_modevent(module_t mod __unused, int event, void *arg __unused)
 
         case MOD_UNLOAD:
             enigma_exit();
+            break;
+
+        case MOD_QUIESCE:
+            if (!safe_for_unloading()) {
+                error = EBUSY;
+            }
             break;
 
         default:
