@@ -61,7 +61,9 @@ local function dev_install() : result type int {
     $device_trinket_src.add_item("enigmactl/user/eel/src/types.h");
     $device_trinket_src.add_item("enigma.ko");
     $device_trinket_src.add_item("enigmactl/user/bin/enigmactl");
-    $device_trinket_src.add_item("../etc/99-enigma.rules");
+    if (hefesto.sys.os_name() == "linux") {
+        $device_trinket_src.add_item("../etc/99-enigma.rules");
+    }
     $device_trinket_src.add_item("../README.md");
     $device_trinket_src.add_item("enigmactl/user/doc/man/enigmactl.1");
     $device_trinket_src.add_item("../etc/enigmactl.sh");
@@ -71,7 +73,9 @@ local function dev_install() : result type int {
     $device_trinket_dst.add_item("/usr/local/share/dev-enigma/include/types.h");
     $device_trinket_dst.add_item("/usr/local/share/dev-enigma/mod/enigma.ko");
     $device_trinket_dst.add_item("/usr/local/bin/enigmactl");
-    $device_trinket_dst.add_item("/etc/udev/rules.d/99-enigma.rules");
+    if (hefesto.sys.os_name() == "linux") {
+        $device_trinket_dst.add_item("/etc/udev/rules.d/99-enigma.rules");
+    }
     $device_trinket_dst.add_item("/usr/local/share/dev-enigma/doc/README.md");
     $device_trinket_dst.add_item("/usr/local/man/man1/enigmactl.1");
     $device_trinket_dst.add_item("/usr/local/bin/enigmactl.sh");
@@ -137,7 +141,9 @@ local function dev_uninstall() : result type int {
     $to_burn.add_item("/usr/local/share/dev-enigma/");
     $to_burn.add_item("/usr/local/bin/enigmactl");
     $to_burn.add_item("/usr/local/bin/enigmactl.sh");
-    $to_burn.add_item("/etc/udev/rules.d/99-enigma.rules");
+    if (hefesto.sys.os_name() == "linux") {
+        $to_burn.add_item("/etc/udev/rules.d/99-enigma.rules");
+    }
     $to_burn.add_item("/usr/local/man/man1/enigmactl.1");
 
     var b type int;

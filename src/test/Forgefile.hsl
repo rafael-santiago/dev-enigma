@@ -74,13 +74,13 @@ local function pontius_check() : result type none {
         $answers.add_item("N");
         $opt = "?";
         while ($answers.index_of($opt) == -1) {
-            $opt = hefesto.sys.prompt("=== WARNING: Now tests over a kernel module will be run.\n\n" +
+            $opt = hefesto.sys.prompt("=== WARNING: Now tests over a kernel module will be executed.\n\n" +
                                       "             If you have made changes over this LKM and you are not so sure about its basic correctness,\n" +
                                       "             maybe you should avoid running it because you can get kernel panics among other amazing stuff.\n\n" +
                                       "Q: Are you sure that you want to start a fir... err... to insert the generated module into your kernel and\n" +
                                       "   test it by your own risk? [y/n] ");
             if ($answers.index_of($opt) == -1) {
-                hefesto.sys.echo("\nYep, Hey Tux!... I see that we got a genius here man, let's try again... S l o w l y .   .       .\n\n");
+                hefesto.sys.echo("\nYep, Hey " + mascot_name() + "!... I see that we got a genius here man, let's try again... S l o w l y .   .       .\n\n");
             }
         }
 
@@ -89,4 +89,16 @@ local function pontius_check() : result type none {
             hefesto.project.abort(0);
         }
     }
+}
+
+local function mascot_name() : result type string {
+    if (hefesto.sys.os_name() == "linux") {
+        result "Tux";
+    }
+
+    if (hefesto.sys.os_name() == "freebsd") {
+        result "Beastie";
+    }
+
+    result "Foobar";
 }
