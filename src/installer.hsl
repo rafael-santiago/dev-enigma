@@ -106,6 +106,10 @@ local function dev_install() : result type int {
         $t = $t + 1;
     }
 
+    # INFO(Santiago): Let's properly customize a sheebang for the current machine.
+
+    hefesto.sys.replace_in_file("/usr/local/bin/enigmactl.sh", "# ---GLUE YOUR SHEEBANG HERE---", "#!" + which_bash());
+
     hefesto.sys.echo("INFO: The device was successfully installed.\n");
 
     result 0;
@@ -181,4 +185,25 @@ local function get_answer(question type string, possible_answers type list) : re
     }
 
     result $answer;
+}
+
+local function which_bash() : result type string {
+    var exit_code type int;
+    $exit_code = hefesto.sys.run("which bash > .which_bash.out");
+
+    var which_bash_out type list;
+    $which_bash_out = hefesto.sys.lines_from_file(".which_bash.out", ".*");
+
+    var bash_path type string;
+    if ($which_bash_out.count() > 0) {
+        $bash_path = $which_bash_out.item(0);
+    } else if (hefesto.sys.os_name() == "linux") {
+        $bash_path = "/bin/bash";
+    } else if (hefesto.sys.os_name() == "freebsd") {
+        $bash_path = "/usr/local/bin/bash";
+    }
+
+    hefesto.sys.rm(".which_bash.out");
+
+    result $bash_path;
 }

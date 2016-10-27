@@ -1,3 +1,4 @@
+# ---GLUE YOUR SHEEBANG HERE---
 #
 #                              Copyright (C) 2016 by Rafael Santiago
 #
@@ -5,8 +6,6 @@
 # the terms of the GNU General Public License version 2.
 #
 #
-
-#!/bin/bash
 
 backtitle="/dev/enigma Setup"
 
