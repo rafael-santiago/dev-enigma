@@ -42,5 +42,5 @@ int dev_read(struct cdev *dev, struct uio *uio, int ioflags) {
 __dev_read_epilogue:
     unlock_uline(uline);
 
-    return (read_bytes == user_len) ? 0 : EFAULT;
+    return (read_bytes == 0) ? EFAULT : 0;
 }
