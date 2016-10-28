@@ -1,14 +1,23 @@
 # ![/dev/enigma](https://github.com/rafael-santiago/dev-enigma/blob/master/etc/logo.png)
 
-This is a way to put an ``Enigma Machine`` under your ``Linux /dev`` sub-directory.
-Yes, it is about a ``Linux char device`` which emulates an ``Enigma``.
+This is a way to put an ``Enigma Machine`` under your ``/dev`` sub-directory. Yes, it is about a
+``char device`` which emulates an ``Enigma``.
 
-Until now I have written it to run on ``2.6.x`` or higher kernel versions. Maybe with a
-little change on the ``dev_ioctl()`` prototype you can be able to build it on ``2.4.x``
-kernels but I am not so sure about.
+This device was written to run on more than one platform. Well, I think that the **Figure 1**
+clarifies any question about supported platforms.
 
-**Warning**: Do not use it to protect any sensible data. The ``Enigma`` was cracked during
-``WWII``. So, it is just for fun.
+**Figure 1**: A lousy but effective joke.
+
+![/dev/enigma/compat](https://github.com/rafael-santiago/dev-enigma/blob/master/etc/dev-enigma-compat-explained.png)
+
+Originally I have written it to run on ``2.6.x`` or higher ``Linux`` kernel versions. Maybe with a
+little change on the ``dev_ioctl()`` prototype you can be able to build it on ``2.4.x`` kernels
+but I am not so sure about.
+
+Now with ``FreeBSD`` I have not tested it on older versions than ``11.0``. However, I guess that it
+should work fine. The ``KLD`` infrastructure is pretty stable.
+
+**Warning**: Do not use it to protect any sensible data. The ``Enigma`` was cracked during ``WWII``. So, it is just for fun.
 
 ## How to clone it?
 
@@ -20,36 +29,47 @@ tux@sché:~/Bletchley# git clone https://github.com/rafael-santiago/dev-enigma de
 
 ## How to build it?
 
-You need [Hefesto](https://github.com/rafael-santiago/hefesto) in order to abstract a bunch
-of complications that you can get during this process.
+You need [Hefesto](https://github.com/rafael-santiago/hefesto) in order to abstract a bunch of complications
+that you can get during this process.
 
-Once ``Hefesto`` well-installed and working, you need to "teach" ``Hefesto`` how to build a
-LKM. In order to do it you need to install a "knowledge base" related with this task on the
-following way:
+Once ``Hefesto`` well-installed and working, you need to "teach" ``Hefesto`` how to build a ``LKM``. In order to
+do it you need to install a "knowledge base" related with this task on the following way:
 
 ```
 tux@sché:~/Bletchley# git clone https://github.com/rafael-santiago/helios helios
 tux@sché:~/Bletchley# cd helios
-tux@sché:~/Bletchley/helios# hefesto --install=lnx-module-toolset
+tux@sché:~/Bletchley/helios# hefesto --install=<module-toolset-name>
 ```
 
-After executing the incantations above your ``Hefesto`` copy will start to know how to build
-``Linux modules``. By the way, you can remove your ``Helios`` local directory, if you want to.
+If you are on ``Linux`` the ``<module-toolset-name>`` should be ``lnx-module-toolset``. If you are on ``FreeBSD``
+the ``<module-toolset-name>`` should be ``freebsd-module-toolset``.
+
+**Of course that you need to have the kernel sources into your environment.**
+
+After executing the incantations above your ``Hefesto`` copy will start to know how to build a ``LKM`` for your
+current platform. By the way, you can remove your ``Helios`` local directory, if you want to.
 
 Now, to build this ``device`` you should jump to its ``src`` sub-directory and:
 
 ```
-tux@sché:~/Bletchley/dev-enigma/src# hefesto
+beastie@sché:~/Bletchley/dev-enigma/src# hefesto
 ```
 
-I think that use Humans as space monkeys to test any kind of code is bad, harmful and shameful.
-Due to it, some tests are executed over the generated module in some point during the build
-process, then **I strongly advise you to avoid building this software on Server machines** ;)
-Vandals!
+I think that use Humans as space monkeys to test any kind of code is bad, harmful and shameful. Due to it, some
+tests are executed over the generated module in some point during the build process, then I find that you should
+consider the **Figure 2**. Yes, your "build user" must be allowed to load/unload ``LKMs``. Before building this
+module watch for your permissions.
 
-After the build process you will get the module ``enigma.ko``. Now you should use
-``insmod``/``rmmod`` in order to get some fun with it. When inserted, this module automatically
-creates a char device named as ``/dev/enigma`` onto your box.
+**Figure 2**: "Vandalism: as beautiful as stone in a ``Mainframe's`` face"... For the sake of your uptime...
+
+![disaster-girl-remarks](https://github.com/rafael-santiago/dev-enigma/blob/master/etc/disaster-girl-build-remarks.jpg)
+
+After the build process you will get the module ``enigma.ko``. Now you should load it into your kernel in order
+to get some fun. When inserted, this module automatically creates a char device named as ``/dev/enigma`` onto your box:
+
+- ``Linux`` users: ``insmod/rmmod`` does the basic job.
+
+- ``FreeBSD`` users: ``kldload/kldunload`` does the basic job.
 
 ## How to install it?
 
@@ -62,7 +82,7 @@ tux@sché:~/Bletchley/dev-enigma/src# hefesto --install
 For uninstalling issues, it is similar, look:
 
 ```
-tux@sché:~/Bletchley/dev-enigma/src# hefesto --uninstall
+beastie@sché:~/Bletchley/dev-enigma/src# hefesto --uninstall
 ```
 
 ## How to use my /dev/enigma?
@@ -185,10 +205,10 @@ ___go_home:
 ```
 
 This ``device driver`` uses another [library](https://github.com/rafael-santiago/eel) of mine related with the ``Enigma``.
-Here basically you will use its conveniences in order to setup your "kenigma" ;)
+Here, basically you will use its conveniences in order to setup your "k-enigma" ;)
 
 You should learn how to configure the machine elements using [eel](https://github.com/rafael-santiago/eel) by reading
-its ``README``. I will abstract these details here. However it is pretty simple.
+its ``README``. I will abstract these details here. However, it is pretty simple.
 
 So, you need two "alien" ``includes`` to compile this sample:
 
@@ -200,20 +220,20 @@ The ``Libeel`` follows embedded into ``/dev/enigma`` source code and all stuff o
 The ``enigmactl.h`` gathers the ``i/o control commands`` definitions and it is located under ``src/enigmactl``.
 
 Now, supposing that you have cloned the ``/dev/enigma`` to ``~/src/dev-enigma`` and saved the sample shown above
-under ``~/src/enigma.c``. To compile it you should proceed as follows:
+into ``~/src/enigma.c``. To compile it you should proceed as follows:
 
 ```
 tux@sché:~/src# gcc enigma.c -oenigma -Idev-enigma/src/enigmactl -Idev-enigma/src/eel
 ```
 
-If you have installed this device driver using the build scripts you can indicate only one include directory
+If you have installed this device driver using its build scripts you can indicate only one include directory
 which would be ``/usr/local/share/dev-enigma/include``.
 
 When running this sample you should get something like:
 
 ```
-tux@sché:~/src# insmod dev-enigma/src/enigma.ko
-tux@sché:~/src# ./enigma
+beastie@sché:~/src# kldload dev-enigma/src/enigma.ko
+beastie@sché:~/src# ./enigma
 PLAINTEXT: In the first few seconds an aching sadness wrenched his heart, but it soon gave way to a feeling
 of sweet disquiet, the excitement of gypsy wanderlust
 
@@ -224,7 +244,7 @@ PLAINTEXT: In the first few seconds an aching sadness wrenched his heart, but it
 of sweet disquiet, the excitement of gypsy wanderlust
 
 That's all folks!!
-tux@sché:~/src# _
+beastie@sché:~/src# _
 ```
 
 The presented sample introduces an ``i/o`` control that is useful in cases in that you want to return your
@@ -260,7 +280,7 @@ If you want to unset the default setting you should:
 ioctl(dev, ENIGMA_UNSET_DEFAULT_SETTING);
 ```
 
-Of course that this sample is pretty dull because it is kind of statical. You should to implement an application
+Of course that this sample is pretty dull because it is kind of static. You should implement an application
 which receives the ``Enigma machine`` settings by command line and also the data buffer. Well, the device is done
 now this kind of code is up to you.
 
@@ -268,7 +288,7 @@ now this kind of code is up to you.
 
 Usage lines is the way of dividing the ``Enigma device`` present in your system among several users. Several but not
 inifite, in fact, I have fixed the number of usage lines to ``10``. By default, it is possible to have ten users
-simultaneously hung in this device. On normal conditions, is expected that none of them step on the foot of each other.
+simultaneously hung in this device. On normal conditions is expected that none of them step on the foot of each other.
 
 For this reason it makes the usage of this device a little bit tough. Thus if you try something like:
 
@@ -292,7 +312,7 @@ a default configuration for any usage line acquired.
 The basic usage for it is as follows:
 
 ```
-tux@sché:~/src# enigmactl --set --l-rotor=i --m-rotor=ii --r-rotor=v \
+beastie@sché:~/src# enigmactl --set --l-rotor=i --m-rotor=ii --r-rotor=v \
 > --l-rotor-at=Y --m-rotor-at=Y --r-rotor-at=Z \
 > --reflector=b \
 > --l-ring=2 --m-ring=3 --r-ring=9 \
@@ -323,7 +343,10 @@ You can also use the shell script ``enigmactl.sh``. This script allows you to se
 
 ![Sample](https://github.com/rafael-santiago/dev-enigma/blob/master/etc/enigmactl-sh-sample.gif)
 
-This shell script is installed with the device driver and it is based on ``bash``.
+This shell script is installed with the device driver and it is based on ``bash``. This remark can be useless for ``Linuxers`` anyway
+it can be valuable for ``FreeBSD`` users. You do not need to worry about changing the shell or indicating the ``bash's`` home. The sheebang
+is configurated when installing the device into your environment. The only thing that you need to do is to install the ``bash`` if you
+do not have it or to do little changes into ``enigmactl.sh`` to be executed natively by yours shell of choice.
 
 ### Using the device directly from shell
 
@@ -331,18 +354,18 @@ As said in a previous [section](#what-are-usage-lines) to use ``/dev/enigma`` di
 will show you a simple ``shell script`` which uses the ``enigmactl.sh`` for setting issues and so uses the device driver
 to perform some encryption/decryption.
 
-I will present the code and after commenting what I judge relevant:
+Firstly, here goes the code and after I will comment what I judge relevant:
 
 ```bash
-# File name: 'enigma.sh'
-
 #!/bin/bash
 
-if [ -f enigmactl.sh ] ; then
+# File name: 'enigma.sh'
+
+if [ -f /usr/local/bin/enigmactl.sh ] ; then
     dialog --yesno "Do you want setup /dev/enigma?" 0 0
 
     if [ $? -eq 0 ]; then
-        ./enigmactl.sh
+        /usr/local/bin/enigmactl.sh
         if [ $? -ne 0 ]; then
             exit $?
         fi
@@ -389,10 +412,9 @@ tux@shcé:~/src# _
 
 ### Best practices
 
-This is just a ``toy device``, so I have used a bunch of things that is not so advised for being used into real-world
-devices. Like ``kmalloc``. Among other issues, it imposes a limit of ``128kb`` (more or less) to the passed data
-buffers. Do not try to pass huge buffers to your ``Enigma device``. Still, do not write for a
-long time without performing any read. These things will not put fire on your ``kernel`` but will cause malfunction in
-your ``char device``.
+This is just a ``toy device``, so I have used a bunch of things that is not so advised for being used in real-world devices.
+Let's take for example the ``Linux`` implementation... The usage of ``kmalloc``. Among other issues, it imposes a limit of ``128kb``
+(more or less) to the passed data buffers. Do not try to pass huge buffers to your ``Enigma device``. Still, do not write for a long
+time without performing any read. These things will not put fire on your ``kernel`` but will cause malfunction in your ``char device``.
 
 That's it! Have fun!
