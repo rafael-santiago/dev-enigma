@@ -421,7 +421,7 @@ tux@shcé:~/src# _
 
 ### Best practices
 
-This is just a ``toy device``, so I have used a bunch of things that is not so advised for being used in real-world devices.
+This is just a ``toy device``, so I have used a bunch of things that is not so well recommended for being used in real-world devices.
 Let's take for example the ``Linux`` implementation... The usage of ``kmalloc``. Among other issues, it imposes a limit of ``128kb``
 (more or less) to the passed data buffers. Do not try to pass huge buffers to your ``Enigma device``. Still, do not write for a long
 time without performing any read. These things will not put fire on your ``kernel`` but will cause malfunction in your ``char device``.
