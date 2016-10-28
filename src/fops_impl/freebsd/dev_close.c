@@ -27,5 +27,7 @@ void dev_close_dtor(void *data) {
     release_uline(*(int *)data);
 
     free(data, M_DEV_OPEN);
+
+    data = NULL;
 }
 
