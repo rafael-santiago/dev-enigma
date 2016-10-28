@@ -1,10 +1,8 @@
 # ![/dev/enigma](https://github.com/rafael-santiago/dev-enigma/blob/master/etc/logo.png)
 
-This is a way to put an ``Enigma Machine`` under your ``/dev`` sub-directory. Yes, it is about a
-``char device`` which emulates an ``Enigma``.
-
-This device was written to run on more than one platform. Well, I think that the **Figure 1**
-clarifies any question about supported platforms.
+It is a way to put an ``Enigma Machine`` under your ``/dev`` sub-directory. Yes, it is about a
+``char device`` which emulates an ``Enigma``. The device was written to run on more than one platform.
+Well, I think that the **Figure 1** clarifies any question about supported platforms.
 
 **Figure 1**: A lousy but effective joke.
 
@@ -18,6 +16,8 @@ Now with ``FreeBSD`` I have not tested it on older versions than ``11.0``. Howev
 should work fine. The ``KLD`` infrastructure is pretty stable.
 
 **Warning**: Do not use it to protect any sensible data. The ``Enigma`` was cracked during ``WWII``. So, it is just for fun.
+
+If you do not know anything about the ``Enigma Machine`` maybe you should start [here](https://en.wikipedia.org/wiki/Enigma_machine).
 
 ## How to clone it?
 
@@ -46,7 +46,7 @@ the ``<module-toolset-name>`` should be ``freebsd-module-toolset``.
 
 **Of course that you need to have the kernel sources into your environment.**
 
-After executing the incantations above your ``Hefesto`` copy will start to know how to build a ``LKM`` for your
+After executing the incantations above your ``Hefesto`` copy will know how to build a ``LKM`` for your
 current platform. By the way, you can remove your ``Helios`` local directory, if you want to.
 
 Now, to build this ``device`` you should jump to its ``src`` sub-directory and:
@@ -56,13 +56,16 @@ beastie@sché:~/Bletchley/dev-enigma/src# hefesto
 ```
 
 I think that use Humans as space monkeys to test any kind of code is bad, harmful and shameful. Due to it, some
-tests are executed over the generated module in some point during the build process, then I find that you should
-consider the **Figure 2**. Yes, your "build user" must be allowed to load/unload ``LKMs``. Before building this
-module watch for your permissions.
+tests are executed over the generated module at some point during the build process, then I find that you should
+consider the **Figure 2**.
 
-**Figure 2**: "Vandalism: as beautiful as stone in a ``Mainframe's`` face"... For the sake of your uptime...
+**Figure 2**: "Vandalism: as beautiful as stone in a ``Mainframe's`` face"... 
 
 ![disaster-girl-remarks](https://github.com/rafael-santiago/dev-enigma/blob/master/etc/disaster-girl-build-remarks.jpg)
+
+For the sake of your uptime... No!
+
+Yes, your "build user" must be allowed to load/unload ``LKMs``. Before building this module watch for your permissions!
 
 After the build process you will get the module ``enigma.ko``. Now you should load it into your kernel in order
 to get some fun. When inserted, this module automatically creates a char device named as ``/dev/enigma`` onto your box:
@@ -79,7 +82,13 @@ In order to install it you need to be under the ``src`` sub-directory and so:
 tux@sché:~/Bletchley/dev-enigma/src# hefesto --install
 ```
 
-For uninstalling issues, it is similar, look:
+All done! Now your ``UNIX`` box has a cool and weird ``char device``! :)
+
+Being on ``Linux`` some default accessing rules will be defined by the ``etc/99-enigma.rules`` file. If for some reason
+you do not agree with the permissions defined there, please, edit and tune it according your preferences before going
+ahead with the installing process.
+
+For uninstalling issues, you should invoke:
 
 ```
 beastie@sché:~/Bletchley/dev-enigma/src# hefesto --uninstall
