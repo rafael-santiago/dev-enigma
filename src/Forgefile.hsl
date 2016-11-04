@@ -6,8 +6,7 @@
 #
 #
 
-include on linux ~/toolsets/linux/linux-module.hsl
-include on freebsd ~/toolsets/freebsd/freebsd-module.hsl
+include toolsets.hsl
 include run_test.hsl
 include installer.hsl
 include mkclean.hsl

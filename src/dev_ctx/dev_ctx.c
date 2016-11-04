@@ -6,7 +6,9 @@
  *
  */
 #include "dev_ctx.h"
+#if defined(__FreeBSD__)
 #include <sys/systm.h>
+#endif
 #include <eel.h>
 #include <ebuf.h>
 
