@@ -33,7 +33,7 @@ int dev_read(struct cdev *dev, struct uio *uio, int ioflags) {
     while (read_bytes != user_len && ulp->ebuf_head != NULL) {
         byte = get_char_from_ebuf_ctx(&ulp->ebuf_head);
         if (uiomove(&byte, 1, uio) != 0) {
-            read_bytes = -EFAULT;
+            read_bytes = 0;
             goto __dev_read_epilogue;
         }
         read_bytes++;

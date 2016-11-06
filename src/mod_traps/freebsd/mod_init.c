@@ -39,7 +39,7 @@ int enigma_init(void) {
     dev_ctx()->device = make_dev(&dev_enigma_cdevsw, 0, UID_ROOT, GID_WHEEL, 0666, DEVNAME);
 
     if (dev_ctx()->device == NULL) {
-        uprintf("dev/enigma: \tdevice creation fail.\n");
+        uprintf("dev/enigma: device creation fail.\n");
         return 1;
     }
 
