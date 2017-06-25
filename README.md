@@ -19,7 +19,7 @@ should work fine. The ``KLD`` infrastructure is pretty stable.
 
 If you do not know anything about the ``Enigma Machine`` maybe you should start [here](https://en.wikipedia.org/wiki/Enigma_machine).
 
-## How to clone it?
+## How to clone it
 
 The easiest way is:
 
@@ -27,7 +27,7 @@ The easiest way is:
 tux@sché:~/Bletchley# git clone https://github.com/rafael-santiago/dev-enigma dev-enigma --recursive
 ```
 
-## How to build it?
+## How to build it
 
 You need [Hefesto](https://github.com/rafael-santiago/hefesto) in order to abstract a bunch of complications
 that you can get during this process.
@@ -74,7 +74,7 @@ to get some fun. When inserted, this module automatically creates a char device 
 
 - ``FreeBSD`` users: ``kldload/kldunload`` does the basic job.
 
-## How to install it?
+## How to install it
 
 In order to install it you need to be under the ``src`` sub-directory and so:
 
@@ -94,7 +94,7 @@ For uninstalling issues, you should invoke:
 beastie@sché:~/Bletchley/dev-enigma/src# hefesto --uninstall
 ```
 
-## How to use my /dev/enigma?
+## How to use /dev/enigma
 
 The usage of this device is pretty straightforward. You should:
 

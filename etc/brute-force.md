@@ -1,4 +1,4 @@
-# How long does it takes to attack Enigma by brute force?
+# How long does it take to attack Enigma by brute force?
 
 Let's quantify the total of possible settings that should be tested on a brute force attack against the Enigma.
 
